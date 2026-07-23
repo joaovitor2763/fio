@@ -137,3 +137,17 @@ Current status: **62 tests, 0 failures.**
 - Fio has no application-owned networking code path.
 - iOS may download Apple speech/model assets through system frameworks.
 - Deleting an entry also deletes its associated audio file.
+
+## Contributions
+
+Fio is maintained as a personal project and is not accepting external
+contributions. Please do not open pull requests; see
+[CONTRIBUTING.md](CONTRIBUTING.md) for details. The Apache 2.0 license still
+allows you to inspect, fork, modify, and redistribute the project under its
+terms.
+
+## License
+
+Copyright 2026 João Vitor Chaves Silva.
+
+Licensed under the [Apache License 2.0](LICENSE).
