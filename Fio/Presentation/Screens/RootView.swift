@@ -21,7 +21,7 @@ struct RootView: View {
 
             if let utilityDestination {
                 utilityScreen(utilityDestination)
-                    .transition(utilityTransition)
+                    .transition(.opacity)
                     .zIndex(1)
             }
         }
@@ -131,12 +131,6 @@ struct RootView: View {
                 Label("Close", systemImage: "xmark")
             }
         }
-    }
-
-    private var utilityTransition: AnyTransition {
-        reduceMotion
-            ? .opacity
-            : .opacity.combined(with: .scale(scale: 0.985))
     }
 
     private func presentUtility(_ destination: UtilityDestination) {
