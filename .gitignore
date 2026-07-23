@@ -1,21 +1,43 @@
 # Xcode
-xcuserdata/
-*.xcuserstate
 DerivedData/
 build/
+*.xcarchive
+*.xcresult
+*.dSYM
+*.dSYM.zip
+*.ipa
 *.moved-aside
 *.pbxuser
 !default.pbxuser
+*.xcuserstate
+xcuserdata/
 *.mode1v3
 !default.mode1v3
 *.mode2v3
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
+*.xccheckout
+*.xcscmblueprint
 
 # Swift Package Manager
 .build/
+.index-build/
 .swiftpm/
+
+# Signing and local distribution
+*.cer
+*.mobileprovision
+*.p12
 
 # macOS
 .DS_Store
+._*
+.AppleDouble
+.LSOverride
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*~

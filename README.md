@@ -9,6 +9,13 @@ third-party SDK, or application-owned network service. Recording,
 transcription, reflection, storage, playback, and usage insights all happen
 locally.
 
+## Inspiration
+
+Fio was directly inspired by **Slate**, the voice-journaling app concept shared
+by Eli Rousso in [this post on X](https://x.com/elirousso/status/2079594911637094442).
+Fio is an independent, from-scratch implementation for iPhone, with its own
+architecture, privacy model, interface, and feature set.
+
 ## What Fio does
 
 - **Voice and text entries** — tap the microphone to record or hold it to
