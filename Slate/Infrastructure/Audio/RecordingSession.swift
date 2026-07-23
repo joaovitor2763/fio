@@ -1,9 +1,10 @@
 import AVFoundation
 import Speech
 import Observation
+import SlateKit
 
 /// Captures the microphone and streams it into SpeechAnalyzer.
-/// Everything happens on this device; nothing is written to disk but the transcript.
+/// Everything happens on this device; nothing is kept but the transcript.
 @MainActor
 @Observable
 final class RecordingSession {
@@ -21,12 +22,13 @@ final class RecordingSession {
     private(set) var elapsed: TimeInterval = 0
     /// Rolling microphone levels driving the waveform, newest last.
     private(set) var levels: [Float] = Array(repeating: 0, count: RecordingSession.barCount)
-    /// Soft cap on a single entry; "Add 30 seconds" extends it.
-    private(set) var timeLimit: TimeInterval = 180
+    private(set) var budget = RecordingBudget.standard
 
     static let barCount = 44
 
-    var remaining: TimeInterval { max(0, timeLimit - elapsed) }
+    var remaining: TimeInterval { budget.remaining(elapsed: elapsed) }
+    var isOutOfTime: Bool { budget.isExhausted(elapsed: elapsed) }
+    var isNearlyOutOfTime: Bool { budget.isNearlyExhausted(elapsed: elapsed) }
 
     private let engine = AVAudioEngine()
     private var analyzer: SpeechAnalyzer?
@@ -64,8 +66,8 @@ final class RecordingSession {
             )
             self.transcriber = transcriber
 
-            // First launch may need the on-device model assets; still no server —
-            // the model is downloaded once by the system, then everything is local.
+            // First launch may need the on-device speech assets; the system
+            // downloads them once, then everything is local forever.
             if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
                 try await request.downloadAndInstall()
             }
@@ -137,10 +139,10 @@ final class RecordingSession {
     }
 
     func addThirtySeconds() {
-        timeLimit += 30
+        budget.extend()
     }
 
-    /// Stops the tap, lets the analyzer finalize, and returns the full transcript.
+    /// Stops the tap, lets the analyzer finalize, and returns the transcript.
     func finish() async -> String {
         guard phase == .recording || phase == .paused else { return transcript }
         phase = .finishing

@@ -1,12 +1,12 @@
 import SwiftUI
-import SwiftData
+import SlateKit
 
 /// One entry: the observer's notes, the tags, and the full transcript.
 struct EntryDetailScreen: View {
-    @Bindable var entry: JournalEntry
+    let entryID: UUID
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var context
+    @Environment(JournalStore.self) private var store
     @AppStorage("hasSeenWeekNote") private var hasSeenWeekNote = false
 
     @State private var showContextEditor = false
@@ -14,40 +14,64 @@ struct EntryDetailScreen: View {
     @State private var showRecorder = false
     @State private var draftContext = ""
 
+    private var entry: Entry? { store.entry(withID: entryID) }
+
     var body: some View {
+        Group {
+            if let entry {
+                content(for: entry)
+            } else {
+                Theme.background.ignoresSafeArea()
+            }
+        }
+        .background(Theme.background)
+        .navigationTitle(entry.map { Formatting.entryTitle(for: $0.createdAt) } ?? "")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Theme.background, for: .navigationBar)
+    }
+
+    private func content(for entry: Entry) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                if !entry.allObservations.isEmpty {
-                    observationList
+                if !entry.displayObservations.isEmpty {
+                    observationList(entry.displayObservations)
+                } else if store.annotatingEntryIDs.contains(entry.id) {
+                    HStack(spacing: 8) {
+                        ReadingDot()
+                        Text("Slate is reading this entry.")
+                            .font(.footnote)
+                            .foregroundStyle(Theme.tertiaryText)
+                    }
                 }
 
-                if !entry.tags.isEmpty {
+                if !entry.reflection.tags.isEmpty {
                     WrapLayout(spacing: 6) {
-                        ForEach(entry.tags, id: \.self) { tag in
+                        ForEach(entry.reflection.tags, id: \.self) { tag in
                             TagCapsule(text: tag)
                         }
                     }
                 }
 
-                if !entry.allObservations.isEmpty {
-                    contextRow
+                if !entry.displayObservations.isEmpty {
+                    contextRow(for: entry)
                 }
 
                 if !hasSeenWeekNote {
                     weekNoteCard
                 }
 
-                Text(entry.transcript)
+                Text(entry.transcript.text)
                     .font(.body)
                     .lineSpacing(5)
                     .foregroundStyle(Theme.primaryText.opacity(0.92))
+                    .textSelection(.enabled)
 
-                if !entry.userContext.isEmpty {
+                if !entry.authorContext.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Added later")
                             .font(.caption)
                             .foregroundStyle(Theme.tertiaryText)
-                        Text(entry.userContext)
+                        Text(entry.authorContext)
                             .font(.subheadline)
                             .foregroundStyle(Theme.secondaryText)
                     }
@@ -58,31 +82,27 @@ struct EntryDetailScreen: View {
             }
             .padding(20)
         }
-        .background(Theme.background)
-        .navigationTitle(entry.createdAt.entryTitle)
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Theme.background, for: .navigationBar)
-        .sheet(isPresented: $showContextEditor) { contextEditor }
+        .sheet(isPresented: $showContextEditor) { contextEditor(for: entry) }
         .fullScreenCover(isPresented: $showRecorder) {
-            RecordScreen(replacing: entry)
+            RecordScreen(replacingEntryID: entry.id)
         }
         .confirmationDialog("Delete this entry?", isPresented: $showDeleteConfirmation, titleVisibility: .visible) {
             Button("Delete entry", role: .destructive) {
-                context.delete(entry)
-                try? context.save()
-                dismiss()
+                Task {
+                    await store.delete(entryID: entry.id)
+                    dismiss()
+                }
             }
         } message: {
             Text("It is only stored on this phone, so this removes it everywhere it exists.")
         }
     }
 
-    private var observationList: some View {
+    private func observationList(_ lines: [String]) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            ForEach(entry.allObservations, id: \.self) { line in
+            ForEach(lines, id: \.self) { line in
                 HStack(alignment: .top, spacing: 10) {
-                    Text("•")
-                        .foregroundStyle(Theme.secondaryText)
+                    Text("•").foregroundStyle(Theme.secondaryText)
                     Text(line)
                         .font(.body)
                         .foregroundStyle(Theme.primaryText)
@@ -94,13 +114,13 @@ struct EntryDetailScreen: View {
         .background(RoundedRectangle(cornerRadius: 22).fill(Theme.card))
     }
 
-    private var contextRow: some View {
+    private func contextRow(for entry: Entry) -> some View {
         Button {
-            draftContext = entry.userContext
+            draftContext = entry.authorContext
             showContextEditor = true
         } label: {
             Label(
-                entry.userContext.isEmpty ? "Not what you meant? Add context" : "Edit your added context",
+                entry.authorContext.isEmpty ? "Not what you meant? Add context" : "Edit your added context",
                 systemImage: "text.badge.plus"
             )
             .font(.footnote)
@@ -117,17 +137,16 @@ struct EntryDetailScreen: View {
             Text("On Sunday, Slate reads the week back to you — what repeated, what shifted. You don't have to do anything.")
                 .font(.footnote)
                 .foregroundStyle(Theme.secondaryText)
-            Button("Got it") { hasSeenWeekNote = true }
-                .font(.footnote.weight(.medium))
-                .foregroundStyle(Theme.primaryText)
-                .padding(.top, 4)
+            Button("Got it") {
+                withAnimation { hasSeenWeekNote = true }
+            }
+            .font(.footnote.weight(.medium))
+            .foregroundStyle(Theme.primaryText)
+            .padding(.top, 4)
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 22)
-                .stroke(Theme.cardStroke, lineWidth: 1)
-        )
+        .background(RoundedRectangle(cornerRadius: 22).stroke(Theme.cardStroke, lineWidth: 1))
     }
 
     private var footerActions: some View {
@@ -149,7 +168,7 @@ struct EntryDetailScreen: View {
         .buttonStyle(.plain)
     }
 
-    private var contextEditor: some View {
+    private func contextEditor(for entry: Entry) -> some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Say what you actually meant. The observer reads this too.")
@@ -171,9 +190,10 @@ struct EntryDetailScreen: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        entry.userContext = draftContext.trimmingCharacters(in: .whitespacesAndNewlines)
-                        try? context.save()
-                        showContextEditor = false
+                        Task {
+                            await store.saveContext(draftContext, forEntryID: entry.id)
+                            showContextEditor = false
+                        }
                     }
                 }
             }

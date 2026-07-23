@@ -1,14 +1,26 @@
 import SwiftUI
-import SwiftData
+import SlateKit
 
 struct RootView: View {
-    @Environment(\.modelContext) private var context
+    @Environment(JournalStore.self) private var store
     @Environment(\.scenePhase) private var scenePhase
     @State private var showRecorder = false
 
     var body: some View {
         NavigationStack {
             TimelineScreen()
+                .navigationDestination(for: Route.self) { route in
+                    switch route {
+                    case .entry(let id):
+                        EntryDetailScreen(entryID: id)
+                    case .review(let id):
+                        if let review = store.review(withID: id) {
+                            ReviewScreen(review: review)
+                        }
+                    case .reviewList:
+                        ReviewListScreen()
+                    }
+                }
                 .safeAreaInset(edge: .bottom) {
                     recordButton
                         .padding(.bottom, 8)
@@ -18,11 +30,12 @@ struct RootView: View {
             RecordScreen()
         }
         .task {
-            await WeekComposer.composePendingReviews(in: context)
+            await store.refresh()
+            await store.composeDueReviews()
         }
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active else { return }
-            Task { await WeekComposer.composePendingReviews(in: context) }
+            Task { await store.composeDueReviews() }
         }
     }
 
@@ -38,6 +51,7 @@ struct RootView: View {
         }
         .buttonStyle(.plain)
         .glassEffect(.regular.interactive(), in: .circle)
+        .sensoryFeedback(.impact(weight: .medium), trigger: showRecorder) { _, new in new }
         .accessibilityLabel("Record an entry")
     }
 }

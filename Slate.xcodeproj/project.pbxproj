@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		5A7E00010000000000000012 /* SlateKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5A7E00010000000000000011 /* SlateKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		5A7E00010000000000000004 /* Slate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Slate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A7E00010000000000000012 /* SlateKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = Slate;
 			packageProductDependencies = (
+				5A7E00010000000000000011 /* SlateKit */,
 			);
 			productName = Slate;
 			productReference = 5A7E00010000000000000004 /* Slate.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 5A7E00010000000000000002;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				5A7E00010000000000000010 /* XCLocalSwiftPackageReference "SlateKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5A7E00010000000000000003 /* Products */;
 			projectDirPath = "";
@@ -326,6 +335,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		5A7E00010000000000000010 /* XCLocalSwiftPackageReference "SlateKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = SlateKit;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		5A7E00010000000000000011 /* SlateKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SlateKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 5A7E00010000000000000006 /* Project object */;
 }

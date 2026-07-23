@@ -1,13 +1,13 @@
 import SwiftUI
-import SwiftData
+import SlateKit
 
 /// Full-screen recorder: waveform, clock, pause, done. Speak; Slate writes.
 struct RecordScreen: View {
     /// When set, the new entry replaces this one (the "Re-record" path).
-    var replacing: JournalEntry?
+    var replacingEntryID: UUID?
 
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var context
+    @Environment(JournalStore.self) private var store
     @State private var session = RecordingSession()
     @State private var isSaving = false
 
@@ -24,9 +24,10 @@ struct RecordScreen: View {
                     .frame(height: 90)
                     .padding(.horizontal, 36)
 
-                Text(session.elapsed.clock)
+                Text(Formatting.clock(session.elapsed))
                     .font(.system(size: 34, weight: .semibold, design: .rounded))
                     .monospacedDigit()
+                    .contentTransition(.numericText())
                     .foregroundStyle(Theme.primaryText)
                     .padding(.top, 22)
 
@@ -44,11 +45,12 @@ struct RecordScreen: View {
             }
         }
         .task { await session.start() }
-        .onChange(of: session.elapsed) { _, elapsed in
-            if elapsed >= session.timeLimit {
+        .onChange(of: session.elapsed) { _, _ in
+            if session.isOutOfTime {
                 Task { await saveAndDismiss() }
             }
         }
+        .sensoryFeedback(.impact(weight: .light), trigger: session.phase)
         .interactiveDismissDisabled()
     }
 
@@ -74,9 +76,11 @@ struct RecordScreen: View {
             } label: {
                 Text("Add 30 seconds")
                     .font(.footnote)
-                    .foregroundStyle(session.remaining <= 45 ? Theme.secondaryText : Theme.tertiaryText)
+                    .foregroundStyle(session.isNearlyOutOfTime ? Theme.secondaryText : Theme.tertiaryText)
             }
             .buttonStyle(.plain)
+            .disabled(!session.budget.canExtend)
+            .animation(.easeInOut(duration: 0.3), value: session.isNearlyOutOfTime)
         } else {
             Text(" ").font(.footnote)
         }
@@ -92,6 +96,7 @@ struct RecordScreen: View {
                     .foregroundStyle(Theme.primaryText)
                     .frame(width: 52, height: 52)
                     .background(Circle().fill(Theme.card))
+                    .contentTransition(.symbolEffect(.replace))
             }
             .buttonStyle(.plain)
             .glassEffect(.regular.interactive(), in: .circle)
@@ -105,6 +110,11 @@ struct RecordScreen: View {
                     .foregroundStyle(.black)
                     .frame(width: 68, height: 68)
                     .background(Circle().fill(.white))
+                    .overlay {
+                        if isSaving {
+                            ProgressView().tint(.black)
+                        }
+                    }
             }
             .buttonStyle(.plain)
             .glassEffect(.regular.interactive(), in: .circle)
@@ -132,42 +142,13 @@ struct RecordScreen: View {
         isSaving = true
 
         let duration = session.elapsed
-        let transcript = await session.finish()
+        let transcriptText = await session.finish()
 
-        guard !transcript.isEmpty else {
-            dismiss()
-            return
-        }
-
-        let entry = JournalEntry(duration: duration, transcript: transcript)
-        context.insert(entry)
-        if let replacing {
-            context.delete(replacing)
-        }
-        try? context.save()
+        await store.finishRecording(
+            transcriptText: transcriptText,
+            duration: duration,
+            replacing: replacingEntryID
+        )
         dismiss()
-
-        // The observer reads the entry after the recorder is gone;
-        // the timeline updates in place when it has something to say.
-        Task { await Reflector.annotate(entry) }
-    }
-}
-
-/// Tight vertical bars mirrored around the midline, newest on the right.
-struct WaveformView: View {
-    let levels: [Float]
-    let isLive: Bool
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 3) {
-            ForEach(Array(levels.enumerated()), id: \.offset) { _, level in
-                Capsule()
-                    .fill(Theme.primaryText)
-                    .frame(width: 3, height: max(4, CGFloat(level) * 80))
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .opacity(isLive ? 1 : 0.5)
-        .animation(.linear(duration: 0.1), value: levels)
     }
 }

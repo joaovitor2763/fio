@@ -1,23 +1,34 @@
 import SwiftUI
 import SwiftData
+import SlateKit
 
+/// Composition root: wires the SwiftData and Apple Intelligence adapters
+/// into the domain's ports. Nothing else in the app knows about both sides.
 @main
 struct SlateApp: App {
-    let container: ModelContainer = {
-        let schema = Schema([JournalEntry.self, WeeklyReview.self])
-        let configuration = ModelConfiguration(schema: schema)
+    private let container: ModelContainer
+    @State private var store: JournalStore
+
+    init() {
         do {
-            return try ModelContainer(for: schema, configurations: [configuration])
+            container = try ModelContainer(for: EntryRecord.self, ReviewRecord.self)
         } catch {
             fatalError("Could not open the journal store: \(error)")
         }
-    }()
+        let context = container.mainContext
+        _store = State(initialValue: JournalStore(
+            entryRepository: SwiftDataEntryRepository(context: context),
+            reviewRepository: SwiftDataReviewRepository(context: context),
+            reflectionService: AppleIntelligenceReflectionService(),
+            weekSummaryService: AppleIntelligenceWeekSummaryService()
+        ))
+    }
 
     var body: some Scene {
         WindowGroup {
             RootView()
+                .environment(store)
                 .preferredColorScheme(.dark)
         }
-        .modelContainer(container)
     }
 }

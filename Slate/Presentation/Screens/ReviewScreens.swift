@@ -1,9 +1,9 @@
 import SwiftUI
-import SwiftData
+import SlateKit
 
 /// The Sunday read-back: a title, a sparkline of the week, and the week itself.
 struct ReviewScreen: View {
-    let review: WeeklyReview
+    let review: WeekReview
 
     var body: some View {
         ScrollView {
@@ -25,6 +25,7 @@ struct ReviewScreen: View {
                     .font(.body)
                     .lineSpacing(6)
                     .foregroundStyle(Theme.primaryText.opacity(0.92))
+                    .textSelection(.enabled)
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 40)
@@ -37,61 +38,26 @@ struct ReviewScreen: View {
     }
 }
 
-/// A thin line through the week's minutes, a dot per day.
-struct Sparkline: View {
-    let values: [Double]
-
-    var body: some View {
-        Canvas { canvas, size in
-            guard values.count > 1 else { return }
-            let maximum = max(values.max() ?? 1, 0.001)
-            let stepX = size.width / CGFloat(values.count - 1)
-            let inset: CGFloat = 6
-
-            func point(_ index: Int) -> CGPoint {
-                let normalized = values[index] / maximum
-                let y = inset + (1 - CGFloat(normalized)) * (size.height - inset * 2)
-                return CGPoint(x: CGFloat(index) * stepX, y: y)
-            }
-
-            var path = Path()
-            path.move(to: point(0))
-            for index in 1..<values.count {
-                path.addLine(to: point(index))
-            }
-            canvas.stroke(path, with: .color(.white.opacity(0.7)), lineWidth: 1)
-
-            for index in values.indices {
-                let center = point(index)
-                let dot = Path(ellipseIn: CGRect(x: center.x - 2.5, y: center.y - 2.5, width: 5, height: 5))
-                canvas.fill(dot, with: .color(.white))
-            }
-        }
-    }
-}
-
 /// All past read-backs, newest first.
 struct ReviewListScreen: View {
-    @Query(sort: \WeeklyReview.weekStart, order: .reverse) private var reviews: [WeeklyReview]
+    @Environment(JournalStore.self) private var store
 
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 12) {
-                if reviews.isEmpty {
+                if store.reviews.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("No reviews yet.")
                             .foregroundStyle(Theme.primaryText)
-                        Text("Record on at least \(WeekComposer.minimumEntries) days and Slate reads the week back to you on Sunday.")
+                        Text("Speak on three or more days and Slate reads the week back to you on Sunday.")
                             .font(.subheadline)
                             .foregroundStyle(Theme.secondaryText)
                     }
                     .padding(.top, 30)
                 }
 
-                ForEach(reviews) { review in
-                    NavigationLink {
-                        ReviewScreen(review: review)
-                    } label: {
+                ForEach(store.reviews) { review in
+                    NavigationLink(value: Route.review(review.id)) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(review.weekStart.formatted(.dateTime.month(.wide).day().year()))
                                 .font(.caption)
@@ -104,7 +70,7 @@ struct ReviewListScreen: View {
                         .padding(16)
                         .background(RoundedRectangle(cornerRadius: 22).fill(Theme.card))
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(CardButtonStyle())
                 }
             }
             .padding(20)
