@@ -32,6 +32,7 @@ struct WeekStrip: View {
     let calendar: JournalCalendar
     let allowedDates: ClosedRange<Date>
     @Environment(\.locale) private var locale
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         HStack(spacing: 8) {
@@ -63,7 +64,7 @@ struct WeekStrip: View {
         let hasEntries = daysWithEntries.contains(calendar.startOfDay(day))
 
         return Button {
-            withAnimation(.spring(duration: 0.3)) {
+            withAnimation(reduceMotion ? Motion.quick : Motion.standard) {
                 selectedDay = calendar.startOfDay(day)
             }
         } label: {
@@ -100,7 +101,7 @@ struct WeekStrip: View {
         let bounded = min(max(calendar.startOfDay(candidate), allowedDates.lowerBound), allowedDates.upperBound)
         guard !calendar.isSameDay(bounded, selectedDay) else { return }
 
-        withAnimation(.spring(duration: 0.3)) {
+        withAnimation(reduceMotion ? Motion.quick : Motion.standard) {
             selectedDay = bounded
         }
     }

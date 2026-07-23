@@ -4,33 +4,26 @@ import FioKit
 struct RootView: View {
     @Environment(JournalStore.self) private var store
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Namespace private var navigationNamespace
     @State private var showRecorder = false
     @State private var showTextEntry = false
     @State private var isRecordButtonPressed = false
     @State private var isTextEntryArmed = false
+    @State private var utilityDestination: UtilityDestination?
     @State private var holdActivationTask: Task<Void, Never>?
 
     var body: some View {
-        NavigationStack {
-            TimelineScreen()
-                .navigationDestination(for: Route.self) { route in
-                    switch route {
-                    case .entry(let id):
-                        EntryDetailScreen(entryID: id)
-                    case .review(let id):
-                        if let review = store.review(withID: id) {
-                            ReviewScreen(review: review)
-                        }
-                    case .reviewList:
-                        ReviewListScreen()
-                    case .insights:
-                        InsightsScreen()
-                    }
-                }
-                .safeAreaInset(edge: .bottom) {
-                    bottomActions
-                        .padding(.bottom, 8)
-                }
+        ZStack {
+            timelineNavigation
+                .accessibilityHidden(utilityDestination != nil)
+                .allowsHitTesting(utilityDestination == nil)
+
+            if let utilityDestination {
+                utilityScreen(utilityDestination)
+                    .transition(utilityTransition)
+                    .zIndex(1)
+            }
         }
         .fullScreenCover(isPresented: $showRecorder) {
             RecordScreen()
@@ -50,9 +43,27 @@ struct RootView: View {
         }
     }
 
+    private var timelineNavigation: some View {
+        NavigationStack {
+            TimelineScreen(navigationNamespace: navigationNamespace)
+                .navigationDestination(for: Route.self) { route in
+                    routeScreen(route)
+                }
+                .safeAreaInset(edge: .bottom) {
+                    if utilityDestination == nil {
+                        bottomActions
+                            .padding(.bottom, 8)
+                            .transition(.opacity)
+                    }
+                }
+        }
+    }
+
     private var bottomActions: some View {
         HStack(spacing: 42) {
-            NavigationLink(value: Route.insights) {
+            Button {
+                presentUtility(.insights)
+            } label: {
                 secondaryAction(systemName: "person.crop.circle")
             }
             .buttonStyle(.plain)
@@ -60,13 +71,84 @@ struct RootView: View {
 
             recordButton
 
-            NavigationLink(value: Route.reviewList) {
+            Button {
+                presentUtility(.reviews)
+            } label: {
                 secondaryAction(systemName: "book.pages")
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Weekly reviews")
         }
         .frame(maxWidth: .infinity)
+    }
+
+    @ViewBuilder
+    private func utilityScreen(_ destination: UtilityDestination) -> some View {
+        NavigationStack {
+            switch destination {
+            case .insights:
+                InsightsScreen()
+                    .toolbar { utilityCloseToolbar }
+            case .reviews:
+                ReviewListScreen(navigationNamespace: navigationNamespace)
+                    .toolbar { utilityCloseToolbar }
+                    .navigationDestination(for: Route.self) { route in
+                        routeScreen(route)
+                    }
+            }
+        }
+        .background(Theme.background.ignoresSafeArea())
+    }
+
+    @ViewBuilder
+    private func routeScreen(_ route: Route) -> some View {
+        switch route {
+        case .entry(let id):
+            EntryDetailScreen(entryID: id)
+                .contextualNavigationTransition(
+                    sourceID: route,
+                    in: navigationNamespace,
+                    reduceMotion: reduceMotion
+                )
+        case .review(let id, _):
+            if let review = store.review(withID: id) {
+                ReviewScreen(review: review)
+                    .contextualNavigationTransition(
+                        sourceID: route,
+                        in: navigationNamespace,
+                        reduceMotion: reduceMotion
+                    )
+            }
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var utilityCloseToolbar: some ToolbarContent {
+        ToolbarItem(placement: .topBarLeading) {
+            Button {
+                dismissUtility()
+            } label: {
+                Label("Close", systemImage: "xmark")
+            }
+        }
+    }
+
+    private var utilityTransition: AnyTransition {
+        reduceMotion
+            ? .opacity
+            : .opacity.combined(with: .scale(scale: 0.985))
+    }
+
+    private func presentUtility(_ destination: UtilityDestination) {
+        withAnimation(reduceMotion ? Motion.quick : Motion.standard) {
+            utilityDestination = destination
+        }
+    }
+
+    private func dismissUtility() {
+        withAnimation(reduceMotion ? Motion.quick : Motion.standard) {
+            utilityDestination = nil
+        }
     }
 
     private var recordButton: some View {
@@ -99,7 +181,7 @@ struct RootView: View {
             .onChanged { value in
                 guard !isRecordButtonPressed else { return }
 
-                withAnimation(.easeOut(duration: 0.12)) {
+                withAnimation(Motion.quick) {
                     isRecordButtonPressed = true
                 }
 
@@ -108,7 +190,7 @@ struct RootView: View {
                     try? await Task.sleep(for: .milliseconds(450))
                     guard !Task.isCancelled, isRecordButtonPressed else { return }
 
-                    withAnimation(.spring(duration: 0.22, bounce: 0.25)) {
+                    withAnimation(Motion.contextual) {
                         isTextEntryArmed = true
                     }
                 }
@@ -122,7 +204,7 @@ struct RootView: View {
                     abs(value.translation.height) < 72
                 let shouldWrite = isTextEntryArmed && stayedNearButton
 
-                withAnimation(.easeOut(duration: 0.14)) {
+                withAnimation(Motion.quick) {
                     isRecordButtonPressed = false
                     isTextEntryArmed = false
                 }
@@ -143,4 +225,9 @@ struct RootView: View {
             .frame(width: 44, height: 44)
             .contentShape(Rectangle())
     }
+}
+
+private enum UtilityDestination {
+    case insights
+    case reviews
 }

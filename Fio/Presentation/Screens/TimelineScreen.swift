@@ -5,6 +5,8 @@ import FioKit
 struct TimelineScreen: View {
     @Environment(JournalStore.self) private var store
     @Environment(\.locale) private var locale
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let navigationNamespace: Namespace.ID
     @State private var selectedDay = JournalCalendar().startOfDay(.now)
     @State private var datePickerSelection = JournalCalendar().startOfDay(.now)
     @State private var showDatePicker = false
@@ -15,25 +17,29 @@ struct TimelineScreen: View {
             LazyVStack(alignment: .leading, spacing: 10) {
                 if store.calendar.isSameDay(selectedDay, .now),
                    let latest = store.latestReview {
-                    NavigationLink(value: Route.review(latest.id)) {
+                    let route = Route.review(latest.id, source: .timeline)
+                    NavigationLink(value: route) {
                         ReviewTeaserCard(review: latest)
+                            .matchedTransitionSource(id: route, in: navigationNamespace) { source in
+                                source
+                                    .background(Theme.background)
+                                    .clipShape(RoundedRectangle(cornerRadius: 22))
+                            }
                     }
                     .buttonStyle(CardButtonStyle())
                 }
 
                 if store.isLoaded {
-                    if let selectedTimelineDay {
-                        daySection(selectedTimelineDay)
-                    } else if store.timeline.isEmpty && store.calendar.isSameDay(selectedDay, .now) {
-                        emptyState
-                    } else {
-                        noEntriesState
-                    }
+                    selectedDayContent
+                        .id(selectedDay)
+                        .transition(dayContentTransition)
                 }
             }
             .padding(.horizontal, 16)
             .padding(.top, 18)
             .padding(.bottom, 90)
+            .animation(reduceMotion ? Motion.quick : Motion.standard, value: selectedDay)
+            .animation(Motion.standard, value: store.isLoaded)
         }
         .scrollBounceBehavior(.basedOnSize)
         .onScrollGeometryChange(for: Bool.self) { geometry in
@@ -110,7 +116,7 @@ struct TimelineScreen: View {
                 .lineLimit(1)
                 .minimumScaleFactor(0.75)
                 .contentTransition(.numericText())
-                .animation(.spring(duration: 0.3), value: selectedDay)
+                .animation(reduceMotion ? Motion.quick : Motion.standard, value: selectedDay)
                 .padding(.top, 8)
             }
             .buttonStyle(.plain)
@@ -128,11 +134,34 @@ struct TimelineScreen: View {
 
     private func daySection(_ day: TimelineDay) -> some View {
         ForEach(day.entries) { entry in
-            NavigationLink(value: Route.entry(entry.id)) {
+            let route = Route.entry(entry.id)
+            NavigationLink(value: route) {
                 EntryCard(entry: entry, isBeingRead: store.annotatingEntryIDs.contains(entry.id))
+                    .matchedTransitionSource(id: route, in: navigationNamespace) { source in
+                        source
+                            .background(Theme.card)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
             }
             .buttonStyle(CardButtonStyle())
         }
+    }
+
+    @ViewBuilder
+    private var selectedDayContent: some View {
+        if let selectedTimelineDay {
+            daySection(selectedTimelineDay)
+        } else if store.timeline.isEmpty && store.calendar.isSameDay(selectedDay, .now) {
+            emptyState
+        } else {
+            noEntriesState
+        }
+    }
+
+    private var dayContentTransition: AnyTransition {
+        reduceMotion
+            ? .opacity
+            : .opacity.combined(with: .scale(scale: 0.99, anchor: .top))
     }
 
     private var emptyState: some View {
@@ -176,7 +205,7 @@ struct TimelineScreen: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        withAnimation(.spring(duration: 0.3)) {
+                        withAnimation(reduceMotion ? Motion.quick : Motion.standard) {
                             selectedDay = store.calendar.startOfDay(datePickerSelection)
                         }
                         showDatePicker = false

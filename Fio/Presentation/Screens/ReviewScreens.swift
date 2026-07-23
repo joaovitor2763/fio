@@ -41,6 +41,7 @@ struct ReviewScreen: View {
 /// All past read-backs, newest first.
 struct ReviewListScreen: View {
     @Environment(JournalStore.self) private var store
+    let navigationNamespace: Namespace.ID
 
     var body: some View {
         ScrollView {
@@ -57,7 +58,8 @@ struct ReviewListScreen: View {
                 }
 
                 ForEach(store.reviews) { review in
-                    NavigationLink(value: Route.review(review.id)) {
+                    let route = Route.review(review.id, source: .list)
+                    NavigationLink(value: route) {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(review.weekStart.formatted(.dateTime.month(.wide).day().year()))
                                 .font(.caption)
@@ -69,6 +71,11 @@ struct ReviewListScreen: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(16)
                         .background(RoundedRectangle(cornerRadius: 22).fill(Theme.card))
+                        .matchedTransitionSource(id: route, in: navigationNamespace) { source in
+                            source
+                                .background(Theme.card)
+                                .clipShape(RoundedRectangle(cornerRadius: 22))
+                        }
                     }
                     .buttonStyle(CardButtonStyle())
                 }

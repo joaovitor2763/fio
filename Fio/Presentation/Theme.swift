@@ -23,6 +23,13 @@ enum Theme {
     }
 }
 
+/// A small motion vocabulary keeps the interface calm and consistent.
+enum Motion {
+    static let quick = Animation.easeOut(duration: 0.14)
+    static let standard = Animation.smooth(duration: 0.22)
+    static let contextual = Animation.spring(duration: 0.30, bounce: 0.06)
+}
+
 private extension UIColor {
     convenience init(hex: UInt32) {
         self.init(
@@ -38,8 +45,8 @@ private extension UIColor {
 struct CardButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.98 : 1)
-            .animation(.spring(duration: 0.25), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.985 : 1)
+            .animation(Motion.quick, value: configuration.isPressed)
     }
 }
 
@@ -49,12 +56,29 @@ extension View {
     func scrollResponsiveNavigationBar() -> some View {
         toolbarBackground(.ultraThinMaterial, for: .navigationBar)
     }
+
+    /// Expands detail views from their source while respecting Reduce Motion.
+    @ViewBuilder
+    func contextualNavigationTransition<ID: Hashable>(
+        sourceID: ID,
+        in namespace: Namespace.ID,
+        reduceMotion: Bool
+    ) -> some View {
+        if reduceMotion {
+            self
+        } else {
+            navigationTransition(.zoom(sourceID: sourceID, in: namespace))
+        }
+    }
 }
 
 /// Where a tap on the timeline can lead.
 enum Route: Hashable {
     case entry(UUID)
-    case review(UUID)
-    case reviewList
-    case insights
+    case review(UUID, source: ReviewRouteSource)
+}
+
+enum ReviewRouteSource: Hashable {
+    case timeline
+    case list
 }
