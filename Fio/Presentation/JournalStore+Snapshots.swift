@@ -2,6 +2,20 @@ import Foundation
 import FioKit
 
 extension JournalStore {
+    func withRefreshMutation<T>(
+        _ operation: @MainActor () async throws -> T
+    ) async rethrows -> T {
+        await refreshLock.acquire()
+        do {
+            let result = try await operation()
+            await refreshLock.release()
+            return result
+        } catch {
+            await refreshLock.release()
+            throw error
+        }
+    }
+
     /// Re-fetches if a suspended read overlaps a local mutation. Applying the
     /// snapshot is then synchronous on MainActor, so older data cannot replace
     /// a save or delete that completed while persistence was being read.

@@ -106,27 +106,27 @@ final class JournalStore {
     // MARK: - Reading
 
     func refresh() async {
-        await refreshLock.acquire()
-        await PerformanceRecorder.measure("journal_refresh") {
-            do {
-                try await loadAndApplyStableEntrySnapshot()
-                loadErrorMessage = nil
-                isLoaded = true
-            } catch {
-                isLoaded = false
-                loadErrorMessage = String(
-                    localized: "Fio could not open your journal. Your entries remain on this iPhone."
-                )
-                if !didMigrateLegacyTags {
-                    // A failed migration remains retryable on the next refresh.
-                    didMigrateLegacyTags = false
+        await withRefreshMutation {
+            await PerformanceRecorder.measure("journal_refresh") {
+                do {
+                    try await loadAndApplyStableEntrySnapshot()
+                    loadErrorMessage = nil
+                    isLoaded = true
+                } catch {
+                    isLoaded = false
+                    loadErrorMessage = String(
+                        localized: "Fio could not open your journal. Your entries remain on this iPhone."
+                    )
+                    if !didMigrateLegacyTags {
+                        // A failed migration remains retryable on the next refresh.
+                        didMigrateLegacyTags = false
+                    }
+                    return
                 }
-                return
+                await refreshAuxiliarySnapshots()
+                prepareUsageStatistics()
             }
-            await refreshAuxiliarySnapshots()
-            prepareUsageStatistics()
         }
-        await refreshLock.release()
     }
 
     func entry(withID id: UUID) -> Entry? {
