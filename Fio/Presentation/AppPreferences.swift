@@ -45,6 +45,24 @@ enum InterfaceLanguage: String, CaseIterable, Identifiable {
     }
 }
 
+enum ObserverPreferences {
+    static let guidanceStorageKey = "observerGuidance"
+    static let maximumGuidanceLength = 500
+
+    static var guidance: String {
+        let stored = UserDefaults.standard.string(forKey: guidanceStorageKey) ?? ""
+        return normalizedGuidance(stored)
+    }
+
+    static func normalizedGuidance(_ text: String) -> String {
+        String(
+            text
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .prefix(maximumGuidanceLength)
+        )
+    }
+}
+
 func appLocalized(_ key: String.LocalizationValue, locale: Locale) -> String {
     String(localized: key, locale: locale)
 }

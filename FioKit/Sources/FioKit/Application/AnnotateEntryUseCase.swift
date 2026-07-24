@@ -12,10 +12,19 @@ public struct AnnotateEntryUseCase: Sendable {
     }
 
     @discardableResult
-    public func execute(entryID: UUID) async throws -> Entry? {
-        guard var entry = try await entries.entry(withID: entryID) else { return nil }
+    public func execute(
+        entryID: UUID,
+        style: ReflectionStyle = .standard,
+        guidance: String = ""
+    ) async throws -> Entry? {
+        guard let entry = try await entries.entry(withID: entryID) else { return nil }
         guard entry.transcript.isSubstantial else { return entry }
-        guard let raw = await reflector.reflect(on: entry.transcript) else { return entry }
+        guard let raw = await reflector.reflect(
+            on: entry.transcript,
+            authorContext: entry.authorContext,
+            style: style,
+            guidance: guidance
+        ) else { return entry }
 
         let reflection = Reflection.sanitized(
             headline: raw.headline,
@@ -24,8 +33,18 @@ public struct AnnotateEntryUseCase: Sendable {
         )
         guard !reflection.isSilent else { return entry }
 
-        entry.reflection = reflection
-        try await entries.save(entry)
-        return entry
+        // The repository makes this comparison and write atomically. A manual
+        // edit made while the model was reading must always win.
+        guard try await entries.saveReflection(
+            reflection,
+            forEntryID: entryID,
+            ifUnchangedFrom: entry
+        ) else {
+            return try await entries.entry(withID: entryID)
+        }
+
+        var annotated = entry
+        annotated.reflection = reflection
+        return annotated
     }
 }

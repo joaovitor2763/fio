@@ -228,6 +228,30 @@ struct InsightsScreen: View {
                 .background(RoundedRectangle(cornerRadius: 18).fill(Theme.card))
             }
             .buttonStyle(.plain)
+
+            NavigationLink {
+                ObserverGuidanceScreen()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "sparkles")
+                        .frame(width: 24)
+                        .foregroundStyle(Theme.secondaryText)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Observer guidance")
+                            .foregroundStyle(Theme.primaryText)
+                        Text("Choose what reflections should emphasize")
+                            .font(.footnote)
+                            .foregroundStyle(Theme.secondaryText)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(Theme.tertiaryText)
+                }
+                .padding(16)
+                .background(RoundedRectangle(cornerRadius: 18).fill(Theme.card))
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -360,6 +384,61 @@ private struct ActivityWeek: Identifiable {
     let start: Date
     let days: [Date]
     var id: Date { start }
+}
+
+private struct ObserverGuidanceScreen: View {
+    @Environment(\.dismiss) private var dismiss
+    @AppStorage(ObserverPreferences.guidanceStorageKey) private var storedGuidance = ""
+    @State private var draftGuidance = ""
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Add an optional preference for future reflections.")
+                .font(.subheadline)
+                .foregroundStyle(Theme.primaryText)
+
+            TextEditor(text: $draftGuidance)
+                .scrollContentBackground(.hidden)
+                .padding(12)
+                .frame(minHeight: 180)
+                .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
+                .onChange(of: draftGuidance) { _, newValue in
+                    if newValue.count > ObserverPreferences.maximumGuidanceLength {
+                        draftGuidance = String(
+                            newValue.prefix(ObserverPreferences.maximumGuidanceLength)
+                        )
+                    }
+                }
+
+            Text("\(draftGuidance.count)/\(ObserverPreferences.maximumGuidanceLength)")
+                .font(.caption)
+                .foregroundStyle(Theme.tertiaryText)
+                .frame(maxWidth: .infinity, alignment: .trailing)
+
+            Text("For example: “Focus on decisions and recurring themes. Use direct language.” Fio still stays factual and never gives advice or invents details.")
+                .font(.footnote)
+                .foregroundStyle(Theme.secondaryText)
+
+            Spacer()
+        }
+        .padding(20)
+        .background(Theme.background)
+        .navigationTitle("Observer guidance")
+        .navigationBarTitleDisplayMode(.inline)
+        .scrollResponsiveNavigationBar()
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Save") {
+                    storedGuidance = ObserverPreferences.normalizedGuidance(draftGuidance)
+                    dismiss()
+                }
+                .fontWeight(.semibold)
+            }
+        }
+        .onAppear {
+            draftGuidance = storedGuidance
+        }
+    }
 }
 
 private struct LanguageSelectionScreen: View {

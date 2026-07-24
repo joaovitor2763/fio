@@ -142,6 +142,74 @@ final class AnnotateEntryUseCaseTests: XCTestCase {
         let result = try await useCase.execute(entryID: UUID())
         XCTAssertNil(result)
     }
+
+    func testPassesStyleAndGuidanceToObserver() async throws {
+        let repository = InMemoryEntryRepository()
+        var entry = makeEntry(words: 40)
+        entry.authorContext = "This was about the product launch."
+        try await repository.save(entry)
+        let reflector = StubReflectionService(result: Reflection(
+            headline: "You returned to the same concern."
+        ))
+        let useCase = AnnotateEntryUseCase(entries: repository, reflector: reflector)
+
+        _ = try await useCase.execute(
+            entryID: entry.id,
+            style: .concise,
+            guidance: "Focus on decisions."
+        )
+
+        XCTAssertEqual(reflector.lastStyle, .concise)
+        XCTAssertEqual(reflector.lastGuidance, "Focus on decisions.")
+        XCTAssertEqual(reflector.lastAuthorContext, "This was about the product launch.")
+    }
+
+    func testStaleModelResponseDoesNotOverwriteAnEditedTranscript() async throws {
+        let repository = InMemoryEntryRepository()
+        let entry = makeEntry(words: 40)
+        try await repository.save(entry)
+        let editedText = (0..<40).map { "edited\($0)" }.joined(separator: " ")
+        let reflector = CallbackReflectionService(
+            result: Reflection(headline: "Based on the old transcript.")
+        ) {
+            guard var latest = try? await repository.entry(withID: entry.id) else {
+                return
+            }
+            latest.transcript = Transcript(editedText)
+            try? await repository.save(latest)
+        }
+        let useCase = AnnotateEntryUseCase(entries: repository, reflector: reflector)
+
+        let result = try await useCase.execute(entryID: entry.id)
+
+        XCTAssertEqual(result?.transcript.text, editedText)
+        XCTAssertTrue(result?.reflection.isSilent == true)
+        XCTAssertEqual(repository.storage.first?.transcript.text, editedText)
+        XCTAssertEqual(repository.saveCount, 2)
+    }
+
+    func testStaleModelResponseDoesNotOverwriteAManualReflection() async throws {
+        let repository = InMemoryEntryRepository()
+        let entry = makeEntry(words: 40)
+        try await repository.save(entry)
+        let manual = Reflection(headline: "The correction I want to keep.")
+        let reflector = CallbackReflectionService(
+            result: Reflection(headline: "A late model response.")
+        ) {
+            guard var latest = try? await repository.entry(withID: entry.id) else {
+                return
+            }
+            latest.reflection = manual
+            try? await repository.save(latest)
+        }
+        let useCase = AnnotateEntryUseCase(entries: repository, reflector: reflector)
+
+        let result = try await useCase.execute(entryID: entry.id)
+
+        XCTAssertEqual(result?.reflection, manual)
+        XCTAssertEqual(repository.storage.first?.reflection, manual)
+        XCTAssertEqual(repository.saveCount, 2)
+    }
 }
 
 final class AmendEntryContextUseCaseTests: XCTestCase {
@@ -186,6 +254,30 @@ final class ReplaceEntryTranscriptUseCaseTests: XCTestCase {
 
         XCTAssertNil(updated)
         XCTAssertEqual(repository.storage.first?.transcript, entry.transcript)
+    }
+}
+
+final class ReplaceEntryReflectionUseCaseTests: XCTestCase {
+    func testStoresSanitizedManualReflection() async throws {
+        let repository = InMemoryEntryRepository()
+        var entry = makeEntry()
+        entry.reflection = Reflection(
+            headline: "An old interpretation remained here.",
+            tags: ["Work"]
+        )
+        try await repository.save(entry)
+        let useCase = ReplaceEntryReflectionUseCase(entries: repository)
+
+        let updated = try await useCase.execute(
+            entryID: entry.id,
+            headline: "  You kept returning to the launch decision. ",
+            observations: ["The deadline appeared more than once.", " "]
+        )
+
+        XCTAssertEqual(updated?.reflection.headline, "You kept returning to the launch decision.")
+        XCTAssertEqual(updated?.reflection.observations, ["The deadline appeared more than once."])
+        XCTAssertEqual(updated?.reflection.tags, ["Work"])
+        XCTAssertEqual(repository.storage.first, updated)
     }
 }
 

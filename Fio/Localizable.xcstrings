@@ -1,569 +1,1741 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "%@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "%@: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "%@: %lld recordings" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$lld recordings"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
+    "%lld percent" : {
+
+    },
+    "%lld/%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
     "12 AM" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "00 h" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "0h" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "00 h"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0h"
+          }
+        }
       }
     },
     "12 PM" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "12 h" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "12h" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12 h"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "12h"
+          }
+        }
       }
     },
     "6 AM" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "6 h" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "6h" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "6 h"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "6h"
+          }
+        }
       }
     },
     "6 PM" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "18 h" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "18h" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "18 h"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "18h"
+          }
+        }
       }
     },
     "Active days" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Días activos" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Dias ativos" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Días activos"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dias ativos"
+          }
+        }
       }
     },
     "Activity" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Actividad" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Atividade" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actividad"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atividade"
+          }
+        }
+      }
+    },
+    "Add" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Añadir" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Adicionar" } }
+      }
+    },
+    "Add an optional preference for future reflections." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Añade una preferencia opcional para futuras reflexiones." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Adicione uma preferência opcional para reflexões futuras." } }
       }
     },
     "Add context" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Añadir contexto" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Adicionar contexto" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir contexto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar contexto"
+          }
+        }
       }
     },
     "Added later" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Añadido después" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Adicionado depois" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadido después"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionado depois"
+          }
+        }
       }
     },
     "Appearance" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Apariencia" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Aparência" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apariencia"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aparência"
+          }
+        }
       }
     },
     "Apple's speech transcriber needs a language before recording starts. Automatic follows your iPhone preferences; it does not detect the language from the audio." : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "El transcriptor de Apple necesita un idioma antes de empezar a grabar. Automático sigue las preferencias del iPhone; no detecta el idioma a partir del audio." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "O transcritor da Apple precisa de um idioma antes do início da gravação. Automático segue as preferências do iPhone; ele não detecta o idioma pelo áudio." } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El transcriptor de Apple necesita un idioma antes de empezar a grabar. Automático sigue las preferencias del iPhone; no detecta el idioma a partir del audio."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O transcritor da Apple precisa de um idioma antes do início da gravação. Automático segue as preferências do iPhone; ele não detecta o idioma pelo áudio."
+          }
+        }
       }
     },
     "Audio" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Audio" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Áudio" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Áudio"
+          }
+        }
       }
+    },
+    "Audio position" : {
+
     },
     "Automatic" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Automático" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Automático" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático"
+          }
+        }
       }
     },
     "Automatic (iPhone)" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Automático (iPhone)" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Automático (iPhone)" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático (iPhone)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automático (iPhone)"
+          }
+        }
       }
     },
     "Cancel" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cancelar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Cancelar" } }
-      }
-    },
-    "Choose the language spoken in this audio" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Elige el idioma hablado en este audio" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Escolha o idioma falado neste áudio" } }
-      }
-    },
-    "Close" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cerrar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Fechar" } }
-      }
-    },
-    "Current streak" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Racha actual" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Sequência atual" } }
-      }
-    },
-    "Dark" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Oscuro" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Escuro" } }
-      }
-    },
-    "Delete entry" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Eliminar entrada" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Excluir entrada" } }
-      }
-    },
-    "Delete this entry?" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Eliminar esta entrada?" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Excluir esta entrada?" } }
-      }
-    },
-    "Discard" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Descartar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Descartar" } }
-      }
-    },
-    "Discard entry" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Descartar entrada" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Descartar entrada" } }
-      }
-    },
-    "Discard this entry?" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Descartar esta entrada?" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Descartar esta entrada?" } }
-      }
-    },
-    "Edit your added context" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar el contexto añadido" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Editar contexto adicionado" } }
-      }
-    },
-    "English" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Inglés" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Inglês" } }
-      }
-    },
-    "Export" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Exportar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Exportar" } }
-      }
-    },
-    "Export audio" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Exportar audio" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Exportar áudio" } }
-      }
-    },
-    "Export text" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Exportar texto" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Exportar texto" } }
-      }
-    },
-    "Export text and audio" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Exportar texto y audio" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Exportar texto e áudio" } }
-      }
-    },
-    "Fio is reading this entry." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Fio está leyendo esta entrada." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Fio está lendo esta entrada." } }
-      }
-    },
-    "Got it" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Entendido" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Entendi" } }
-      }
-    },
-    "Interface language" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Idioma de la interfaz" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Idioma da interface" } }
-      }
-    },
-    "It is only stored on this phone, so this removes it everywhere it exists." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Solo se guarda en este iPhone, por lo que se eliminará por completo." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Ela fica armazenada apenas neste iPhone, então será removida por completo." } }
-      }
-    },
-    "Keep writing" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Seguir escribiendo" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Continuar escrevendo" } }
-      }
-    },
-    "Language" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Idioma" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Idioma" } }
-      }
-    },
-    "Languages on this iPhone" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Idiomas en este iPhone" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Idiomas neste iPhone" } }
-      }
-    },
-    "Last 52 weeks" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Últimas 52 semanas" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Últimas 52 semanas" } }
-      }
-    },
-    "Less" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Menos" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Menos" } }
-      }
-    },
-    "Light" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Claro" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Claro" } }
-      }
-    },
-    "Loading languages…" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cargando idiomas…" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Carregando idiomas…" } }
-      }
-    },
-    "Longest streak" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Racha más larga" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Maior sequência" } }
-      }
-    },
-    "More" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Más" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Mais" } }
-      }
-    },
-    "No account · only this iPhone" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Sin cuenta · solo en este iPhone" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Sem conta · apenas neste iPhone" } }
-      }
-    },
-    "No reviews yet." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Todavía no hay revisiones." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Ainda não há revisões." } }
-      }
-    },
-    "Not enough data yet" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Aún no hay datos suficientes" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Ainda não há dados suficientes" } }
-      }
-    },
-    "Not what you meant? Add context" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿No es lo que querías decir? Añade contexto" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Não foi o que quis dizer? Adicione contexto" } }
-      }
-    },
-    "Nothing here yet." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Todavía no hay nada aquí." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Ainda não há nada aqui." } }
-      }
-    },
-    "On Sunday, Fio reads the week back to you — what repeated, what shifted. You don't have to do anything." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "El domingo, Fio te cuenta cómo fue la semana: lo que se repitió y lo que cambió. No tienes que hacer nada." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "No domingo, o Fio conta como foi sua semana — o que se repetiu e o que mudou. Você não precisa fazer nada." } }
-      }
-    },
-    "Only this entry is changed. Your language for new recordings stays the same." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Solo cambia esta entrada. El idioma de las nuevas grabaciones seguirá igual." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Apenas esta entrada será alterada. O idioma das novas gravações continuará igual." } }
-      }
-    },
-    "Pause" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Pausar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Pausar" } }
-      }
-    },
-    "Pause audio" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Pausar audio" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Pausar áudio" } }
-      }
-    },
-    "Play audio" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reproducir audio" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Reproduzir áudio" } }
-      }
-    },
-    "Portuguese (Brazil)" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Portugués (Brasil)" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Português (Brasil)" } }
-      }
-    },
-    "Preferences" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Preferencias" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Preferências" } }
-      }
-    },
-    "Re-record" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Volver a grabar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Regravar" } }
-      }
-    },
-    "Record instead" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Grabar en su lugar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Gravar em vez disso" } }
-      }
-    },
-    "Recordings" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Grabaciones" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Gravações" } }
-      }
-    },
-    "Resume" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reanudar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Retomar" } }
-      }
-    },
-    "Review" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Revisión" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Revisão" } }
-      }
-    },
-    "Reviews" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Revisiones" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Revisões" } }
-      }
-    },
-    "Save" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Guardar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Salvar" } }
-      }
-    },
-    "Say what you actually meant. The observer reads this too." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escribe lo que realmente querías decir. El observador también leerá esto." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Escreva o que você realmente quis dizer. O observador também lerá isto." } }
-      }
-    },
-    "Spanish" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Español" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Espanhol" } }
-      }
-    },
-    "Speak on three or more days and Fio reads the week back to you on Sunday." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Habla durante tres días o más y Fio te contará la semana el domingo." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Fale em três ou mais dias e, no domingo, o Fio contará como foi sua semana." } }
-      }
-    },
-    "Tap the microphone to speak, or hold it to write. Nothing leaves this phone." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Toca el micrófono para hablar o mantenlo pulsado para escribir. Nada sale de este iPhone." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Toque no microfone para falar ou mantenha pressionado para escrever. Nada sai deste iPhone." } }
-      }
-    },
-    "Text" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Texto" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Texto" } }
-      }
-    },
-    "The text you wrote has not been saved." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "El texto que escribiste no se ha guardado." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "O texto que você escreveu não foi salvo." } }
-      }
-    },
-    "These insights are calculated on this iPhone from your journal. Nothing is uploaded." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Estas métricas se calculan en este iPhone a partir de tu diario. No se sube nada." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Estas métricas são calculadas neste iPhone a partir do seu diário. Nada é enviado." } }
-      }
-    },
-    "This becomes your week." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Esto se convierte en tu semana." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Isto se torna a sua semana." } }
-      }
-    },
-    "Time recorded" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tiempo grabado" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Tempo gravado" } }
-      }
-    },
-    "Transcribe again" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Transcribir de nuevo" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Transcrever novamente" } }
-      }
-    },
-    "Transcribe again in another language" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Transcribir de nuevo en otro idioma" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Transcrever novamente em outro idioma" } }
-      }
-    },
-    "Transcribing audio…" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Transcribiendo audio…" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Transcrevendo áudio…" } }
-      }
-    },
-    "Transcription language" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Idioma de transcripción" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Idioma da transcrição" } }
-      }
-    },
-    "Transcription unavailable. The original audio is preserved." : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Transcripción no disponible. Se conserva el audio original." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Transcrição indisponível. O áudio original foi preservado." } }
-      }
-    },
-    "Uses the first supported preferred language" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Usa el primer idioma preferido compatible" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Usa o primeiro idioma preferido compatível" } }
-      }
-    },
-    "What's on your mind?" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Qué tienes en mente?" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "O que está passando pela sua cabeça?" } }
-      }
-    },
-    "When you speak" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cuándo hablas" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Quando você fala" } }
-      }
-    },
-    "Words spoken" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Palabras habladas" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Palavras faladas" } }
-      }
-    },
-    "Write" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escribir" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Escrever" } }
-      }
-    },
-    "Finish entry" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Finalizar entrada" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Finalizar entrada" } }
-      }
-    },
-    "Fio is reading this entry" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Fio está leyendo esta entrada" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Fio está lendo esta entrada" } }
-      }
-    },
-    "Minutes spoken per day this week" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Minutos hablados por día esta semana" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Minutos falados por dia nesta semana" } }
-      }
-    },
-    "Record an entry" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Grabar una entrada" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Gravar uma entrada" } }
-      }
-    },
-    "Touch and hold to write instead" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mantén pulsado para escribir" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Mantenha pressionado para escrever" } }
-      }
-    },
-    "Weekly reviews" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Revisiones semanales" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Revisões semanais" } }
-      }
-    },
-    "Write an entry" : {
-      "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escribir una entrada" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Escrever uma entrada" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
       }
     },
     "Choose a date" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Elegir una fecha" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Escolher uma data" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elegir una fecha"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolher uma data"
+          }
+        }
+      }
+    },
+    "Choose the language spoken in this audio" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige el idioma hablado en este audio"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha o idioma falado neste áudio"
+          }
+        }
+      }
+    },
+    "Choose what reflections should emphasize" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Elige qué deben destacar las reflexiones" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Escolha o que as reflexões devem enfatizar" } }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerrar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fechar"
+          }
+        }
+      }
+    },
+    "Correct the words below. Saving will regenerate the reflection from the edited transcript." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Corrige las palabras de abajo. Al guardar, la reflexión se regenerará a partir de la transcripción editada." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Corrija as palavras abaixo. Ao salvar, a reflexão será regenerada a partir da transcrição editada." } }
+      }
+    },
+    "Create reflection" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Crear reflexión" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Criar reflexão" } }
+      }
+    },
+    "Current streak" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Racha actual"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sequência atual"
+          }
+        }
+      }
+    },
+    "Dark" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oscuro"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escuro"
+          }
+        }
+      }
+    },
+    "Delete entry" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar entrada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir entrada"
+          }
+        }
+      }
+    },
+    "Delete this entry?" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Eliminar esta entrada?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excluir esta entrada?"
+          }
+        }
+      }
+    },
+    "Discard" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descartar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descartar"
+          }
+        }
+      }
+    },
+    "Discard entry" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descartar entrada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descartar entrada"
+          }
+        }
+      }
+    },
+    "Discard this entry?" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Descartar esta entrada?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descartar esta entrada?"
+          }
+        }
       }
     },
     "Done" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Listo" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Concluir" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Concluir"
+          }
+        }
+      }
+    },
+    "Edit" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Editar" } }
+      }
+    },
+    "Edit reflection" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar reflexión" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Editar reflexão" } }
+      }
+    },
+    "Edit transcript" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar transcripción" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Editar transcrição" } }
+      }
+    },
+    "Edit your added context" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar el contexto añadido"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar contexto adicionado"
+          }
+        }
+      }
+    },
+    "English" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inglés"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inglês"
+          }
+        }
+      }
+    },
+    "Entry could not be updated" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No se pudo actualizar la entrada" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Não foi possível atualizar a entrada" } }
+      }
+    },
+    "Expand" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ampliar" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Expandir" } }
+      }
+    },
+    "Export" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar"
+          }
+        }
+      }
+    },
+    "Export audio" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar audio"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar áudio"
+          }
+        }
+      }
+    },
+    "Export text" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar texto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar texto"
+          }
+        }
+      }
+    },
+    "Export text and audio" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar texto y audio"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar texto e áudio"
+          }
+        }
+      }
+    },
+    "Finish entry" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalizar entrada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finalizar entrada"
+          }
+        }
+      }
+    },
+    "Fio" : {
+
+    },
+    "Fio is reading this entry" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fio está leyendo esta entrada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fio está lendo esta entrada"
+          }
+        }
+      }
+    },
+    "Fio is reading this entry." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fio está leyendo esta entrada."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fio está lendo esta entrada."
+          }
+        }
+      }
+    },
+    "Fio profile and insights" : {
+
+    },
+    "For example: “Focus on decisions and recurring themes. Use direct language.” Fio still stays factual and never gives advice or invents details." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Por ejemplo: “Céntrate en las decisiones y los temas recurrentes. Usa un lenguaje directo.” Fio sigue ateniéndose a los hechos y nunca da consejos ni inventa detalles." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Por exemplo: “Dê foco às decisões e aos temas recorrentes. Use linguagem direta.” O Fio continua fiel aos fatos e nunca dá conselhos nem inventa detalhes." } }
+      }
+    },
+    "Further observations" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Más observaciones" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Outras observações" } }
+      }
+    },
+    "Got it" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entendido"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entendi"
+          }
+        }
+      }
+    },
+    "Headline" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Observación principal" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Observação principal" } }
+      }
+    },
+    "Interface language" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma de la interfaz"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma da interface"
+          }
+        }
+      }
+    },
+    "It is only stored on this phone, so this removes it everywhere it exists." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo se guarda en este iPhone, por lo que se eliminará por completo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ela fica armazenada apenas neste iPhone, então será removida por completo."
+          }
+        }
+      }
+    },
+    "Keep writing" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seguir escribiendo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar escrevendo"
+          }
+        }
+      }
+    },
+    "Language" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma"
+          }
+        }
+      }
+    },
+    "Languages on this iPhone" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idiomas en este iPhone"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idiomas neste iPhone"
+          }
+        }
+      }
+    },
+    "Last 52 weeks" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Últimas 52 semanas"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Últimas 52 semanas"
+          }
+        }
+      }
+    },
+    "Less" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menos"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menos"
+          }
+        }
+      }
+    },
+    "Light" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claro"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Claro"
+          }
+        }
+      }
+    },
+    "Loading languages…" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cargando idiomas…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carregando idiomas…"
+          }
+        }
+      }
+    },
+    "Longest streak" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Racha más larga"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maior sequência"
+          }
+        }
+      }
+    },
+    "Main observation" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Observación principal" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Observação principal" } }
+      }
+    },
+    "Make shorter" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Acortar" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Deixar mais curto" } }
+      }
+    },
+    "Minutes spoken per day this week" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutos hablados por día esta semana"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minutos falados por dia nesta semana"
+          }
+        }
+      }
+    },
+    "More" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais"
+          }
+        }
       }
     },
     "Next week" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Semana siguiente" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Próxima semana" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana siguiente"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima semana"
+          }
+        }
+      }
+    },
+    "No account · only this iPhone" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin cuenta · solo en este iPhone"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem conta · apenas neste iPhone"
+          }
+        }
       }
     },
     "No entries on this day." : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "No hay entradas en este día." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Não há entradas neste dia." } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay entradas en este día."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não há entradas neste dia."
+          }
+        }
+      }
+    },
+    "No results" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Sin resultados" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Nenhum resultado" } }
+      }
+    },
+    "No reviews yet." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todavía no hay revisiones."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há revisões."
+          }
+        }
+      }
+    },
+    "Not enough data yet" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay datos suficientes"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há dados suficientes"
+          }
+        }
+      }
+    },
+    "Not what you meant? Add context" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿No es lo que querías decir? Añade contexto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi o que quis dizer? Adicione contexto"
+          }
+        }
+      }
+    },
+    "Nothing here yet." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Todavía no hay nada aquí."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ainda não há nada aqui."
+          }
+        }
+      }
+    },
+    "OK" : {
+
+    },
+    "Observer guidance" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Orientación del observador" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Orientação do observador" } }
+      }
+    },
+    "On Sunday, Fio reads the week back to you — what repeated, what shifted. You don't have to do anything." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El domingo, Fio te cuenta cómo fue la semana: lo que se repitió y lo que cambió. No tienes que hacer nada."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No domingo, o Fio conta como foi sua semana — o que se repetiu e o que mudou. Você não precisa fazer nada."
+          }
+        }
+      }
+    },
+    "Only this entry is changed. Your language for new recordings stays the same." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo cambia esta entrada. El idioma de las nuevas grabaciones seguirá igual."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apenas esta entrada será alterada. O idioma das novas gravações continuará igual."
+          }
+        }
       }
     },
     "Opens the calendar" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Abre el calendario" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Abre o calendário" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre el calendario"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre o calendário"
+          }
+        }
+      }
+    },
+    "Pause" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar"
+          }
+        }
+      }
+    },
+    "Pause audio" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar audio"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar áudio"
+          }
+        }
+      }
+    },
+    "Play audio" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproducir audio"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduzir áudio"
+          }
+        }
+      }
+    },
+    "Playback speed %@" : {
+
+    },
+    "Portuguese (Brazil)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portugués (Brasil)"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Português (Brasil)"
+          }
+        }
+      }
+    },
+    "Preferences" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferencias"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferências"
+          }
+        }
       }
     },
     "Previous week" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Semana anterior" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Semana anterior" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana anterior"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semana anterior"
+          }
+        }
+      }
+    },
+    "Put each observation on a separate line. Up to three are kept." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escribe cada observación en una línea separada. Se conservarán hasta tres." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Coloque cada observação em uma linha separada. Até três serão mantidas." } }
+      }
+    },
+    "Re-record" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a grabar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regravar"
+          }
+        }
+      }
+    },
+    "Record an entry" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grabar una entrada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gravar uma entrada"
+          }
+        }
+      }
+    },
+    "Record instead" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grabar en su lugar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gravar em vez disso"
+          }
+        }
+      }
+    },
+    "Recordings" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grabaciones"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gravações"
+          }
+        }
+      }
+    },
+    "Reflect again" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Generar otra reflexión" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Refazer reflexão" } }
+      }
+    },
+    "Reflection" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reflexión" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Reflexão" } }
+      }
+    },
+    "Reflection options" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Opciones de reflexión" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Opções da reflexão" } }
+      }
+    },
+    "Resume" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reanudar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retomar"
+          }
+        }
+      }
+    },
+    "Review" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisão"
+          }
+        }
+      }
+    },
+    "Reviews" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisiones"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisões"
+          }
+        }
+      }
+    },
+    "Save" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Salvar"
+          }
+        }
+      }
+    },
+    "Say what you actually meant. The observer reads this too." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe lo que realmente querías decir. El observador también leerá esto."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escreva o que você realmente quis dizer. O observador também lerá isto."
+          }
+        }
+      }
+    },
+    "Search" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Buscar" } }
+      }
+    },
+    "Search every transcript, reflection, and note stored on this iPhone." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Busca en todas las transcripciones, reflexiones y notas guardadas en este iPhone." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Busque em todas as transcrições, reflexões e notas armazenadas neste iPhone." } }
+      }
+    },
+    "Search transcript, reflection, and context" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar en transcripción, reflexión y contexto" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Buscar em transcrição, reflexão e contexto" } }
+      }
+    },
+    "Search your journal" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar en tu diario" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Buscar no seu diário" } }
+      }
+    },
+    "Spanish" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Español"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espanhol"
+          }
+        }
+      }
+    },
+    "Speak on three or more days and Fio reads the week back to you on Sunday." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Habla durante tres días o más y Fio te contará la semana el domingo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fale em três ou mais dias e, no domingo, o Fio contará como foi sua semana."
+          }
+        }
+      }
+    },
+    "Tap the microphone to speak, or hold it to write. Nothing leaves this phone." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca el micrófono para hablar o mantenlo pulsado para escribir. Nada sale de este iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque no microfone para falar ou mantenha pressionado para escrever. Nada sai deste iPhone."
+          }
+        }
+      }
+    },
+    "Text" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
+          }
+        }
+      }
+    },
+    "The text you wrote has not been saved." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El texto que escribiste no se ha guardado."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O texto que você escreveu não foi salvo."
+          }
+        }
+      }
+    },
+    "These insights are calculated on this iPhone from your journal. Nothing is uploaded." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estas métricas se calculan en este iPhone a partir de tu diario. No se sube nada."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estas métricas são calculadas neste iPhone a partir do seu diário. Nada é enviado."
+          }
+        }
+      }
+    },
+    "This becomes your week." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esto se convierte en tu semana."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Isto se torna a sua semana."
+          }
+        }
+      }
+    },
+    "Time recorded" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiempo grabado"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo gravado"
+          }
+        }
+      }
+    },
+    "Touch and hold to write instead" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantén pulsado para escribir"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantenha pressionado para escrever"
+          }
+        }
+      }
+    },
+    "Transcribe again" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcribir de nuevo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcrever novamente"
+          }
+        }
+      }
+    },
+    "Transcribe again in another language" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcribir de nuevo en otro idioma"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcrever novamente em outro idioma"
+          }
+        }
+      }
+    },
+    "Transcribing audio…" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcribiendo audio…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcrevendo áudio…"
+          }
+        }
+      }
+    },
+    "Transcript" : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Transcripción" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Transcrição" } }
+      }
+    },
+    "Transcription language" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma de transcripción"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma da transcrição"
+          }
+        }
+      }
+    },
+    "Transcription unavailable. The original audio is preserved." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcripción no disponible. Se conserva el audio original."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcrição indisponível. O áudio original foi preservado."
+          }
+        }
+      }
+    },
+    "Try a different word or phrase." : {
+      "localizations" : {
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Prueba con otra palabra o frase." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Tente outra palavra ou frase." } }
+      }
+    },
+    "Uses the first supported preferred language" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa el primer idioma preferido compatible"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usa o primeiro idioma preferido compatível"
+          }
+        }
+      }
+    },
+    "Weekly reviews" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisiones semanales"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Revisões semanais"
+          }
+        }
+      }
+    },
+    "What's on your mind?" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Qué tienes en mente?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que está passando pela sua cabeça?"
+          }
+        }
+      }
+    },
+    "When you speak" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuándo hablas"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando você fala"
+          }
+        }
+      }
+    },
+    "Words spoken" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palabras habladas"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Palavras faladas"
+          }
+        }
+      }
+    },
+    "Write" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribir"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrever"
+          }
+        }
+      }
+    },
+    "Write an entry" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribir una entrada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escrever uma entrada"
+          }
+        }
       }
     },
     "Your private voice journal" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tu diario de voz privado" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Seu diário de voz privado" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu diario de voz privado"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu diário de voz privado"
+          }
+        }
       }
+    },
+    "Your week, read back · %@" : {
+
+    },
+    "·" : {
+
+    },
+    "•" : {
+
     }
   },
   "version" : "1.0"

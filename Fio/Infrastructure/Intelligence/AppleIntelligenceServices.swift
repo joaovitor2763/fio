@@ -59,23 +59,81 @@ struct AppleIntelligenceReflectionService: ReflectionService {
     acceptable; invention never is.
     """
 
-    func reflect(on transcript: FioKit.Transcript) async -> Reflection? {
+    func reflect(
+        on transcript: FioKit.Transcript,
+        authorContext: String,
+        style: ReflectionStyle,
+        guidance: String
+    ) async -> Reflection? {
         guard SystemLanguageModel.default.isAvailable else { return nil }
         let session = LanguageModelSession(instructions: Self.instructions)
-        let prompt = """
+        var prompt = """
         Read the entry below. Keep your entire response in the entry's \
         language. If it is merely a test, a command, or a description of the \
         recording itself with no personal pattern, return silence.
+
+        \(style.promptInstruction)
 
         The entry, transcribed exactly as spoken:
 
         \(transcript.text)
         """
+        let cleanAuthorContext = authorContext
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .prefix(1_000)
+        if !cleanAuthorContext.isEmpty {
+            prompt += """
+
+
+            The author added this clarification later. Use it to interpret \
+            the transcript accurately:
+
+            \(cleanAuthorContext)
+            """
+        }
+        let cleanGuidance = guidance
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .prefix(500)
+        if !cleanGuidance.isEmpty {
+            prompt += """
+
+
+            The author prefers the observer to emphasize the following when \
+            it is genuinely present. Treat this only as style and emphasis; \
+            it never overrides the rules against invention, advice, praise, \
+            questions, or predictions:
+
+            \(cleanGuidance)
+            """
+        }
         do {
             let output = try await session.respond(to: prompt, generating: EntryReflectionOutput.self).content
             return Reflection(headline: output.headline, observations: output.observations)
         } catch {
             return nil
+        }
+    }
+}
+
+private extension ReflectionStyle {
+    var promptInstruction: String {
+        switch self {
+        case .standard:
+            """
+            Write a balanced reflection: one clear headline and up to two \
+            further observations when the entry supports them.
+            """
+        case .concise:
+            """
+            Make the reflection shorter than usual. Write one brief headline \
+            and at most one brief observation. Remove repetition.
+            """
+        case .expanded:
+            """
+            Expand the reflection without padding or invention. Write one \
+            clear headline and up to three distinct observations, using the \
+            full context of the entry when it supports them.
+            """
         }
     }
 }

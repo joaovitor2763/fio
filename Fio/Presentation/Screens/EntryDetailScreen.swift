@@ -12,13 +12,20 @@ struct EntryDetailScreen: View {
     @AppStorage("hasSeenWeekNote") private var hasSeenWeekNote = false
 
     @State private var showContextEditor = false
+    @State private var showTranscriptEditor = false
+    @State private var showReflectionEditor = false
     @State private var showDeleteConfirmation = false
     @State private var showRecorder = false
     @State private var showRetranscriptionLanguages = false
     @State private var isRetranscribing = false
-    @State private var retranscriptionError: String?
+    @State private var updateError: String?
+    @State private var transcriptEditorError: String?
+    @State private var reflectionEditorError: String?
     @State private var exportPayload: ExportPayload?
     @State private var draftContext = ""
+    @State private var draftTranscript = ""
+    @State private var draftHeadline = ""
+    @State private var draftObservations = ""
     @State private var audioPlayer = AudioPlaybackController()
 
     private var entry: Entry? { store.entry(withID: entryID) }
@@ -51,7 +58,7 @@ struct EntryDetailScreen: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 if !entry.displayObservations.isEmpty {
-                    observationList(entry.displayObservations)
+                    observationList(for: entry)
                 } else if store.annotatingEntryIDs.contains(entry.id) {
                     HStack(spacing: 8) {
                         ReadingDot()
@@ -59,6 +66,15 @@ struct EntryDetailScreen: View {
                             .font(.footnote)
                             .foregroundStyle(Theme.tertiaryText)
                     }
+                } else if entry.transcript.isSubstantial {
+                    Button {
+                        regenerateReflection(for: entry, style: .standard)
+                    } label: {
+                        Label("Create reflection", systemImage: "sparkles")
+                            .font(.footnote)
+                            .foregroundStyle(Theme.secondaryText)
+                    }
+                    .buttonStyle(.plain)
                 }
 
                 if !entry.displayObservations.isEmpty {
@@ -74,17 +90,7 @@ struct EntryDetailScreen: View {
                     retranscriptionAction(for: entry)
                 }
 
-                if entry.transcript.isEmpty {
-                    Text("Transcription unavailable. The original audio is preserved.")
-                        .font(.body)
-                        .foregroundStyle(Theme.secondaryText)
-                } else {
-                    Text(entry.transcript.text)
-                        .font(.body)
-                        .lineSpacing(5)
-                        .foregroundStyle(Theme.primaryText.opacity(0.92))
-                        .textSelection(.enabled)
-                }
+                transcriptSection(for: entry)
 
                 if !entry.authorContext.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
@@ -103,6 +109,8 @@ struct EntryDetailScreen: View {
             .padding(20)
         }
         .sheet(isPresented: $showContextEditor) { contextEditor(for: entry) }
+        .sheet(isPresented: $showTranscriptEditor) { transcriptEditor(for: entry) }
+        .sheet(isPresented: $showReflectionEditor) { reflectionEditor(for: entry) }
         .sheet(isPresented: $showRetranscriptionLanguages) {
             RetranscriptionLanguagePicker { locale in
                 retranscribe(entry, using: locale)
@@ -125,21 +133,35 @@ struct EntryDetailScreen: View {
             Text("It is only stored on this phone, so this removes it everywhere it exists.")
         }
         .alert(
-            "Transcription could not be updated",
+            "Entry could not be updated",
             isPresented: Binding(
-                get: { retranscriptionError != nil },
-                set: { if !$0 { retranscriptionError = nil } }
+                get: { updateError != nil },
+                set: { if !$0 { updateError = nil } }
             )
         ) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text(retranscriptionError ?? "")
+            Text(updateError ?? "")
         }
     }
 
-    private func observationList(_ lines: [String]) -> some View {
+    private func observationList(for entry: Entry) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            ForEach(lines, id: \.self) { line in
+            HStack {
+                Text("Reflection")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Theme.secondaryText)
+                Spacer()
+                if store.annotatingEntryIDs.contains(entry.id) {
+                    ProgressView()
+                        .controlSize(.small)
+                        .tint(Theme.secondaryText)
+                } else {
+                    reflectionMenu(for: entry)
+                }
+            }
+
+            ForEach(entry.displayObservations, id: \.self) { line in
                 HStack(alignment: .top, spacing: 10) {
                     Text("•").foregroundStyle(Theme.secondaryText)
                     Text(line)
@@ -151,6 +173,74 @@ struct EntryDetailScreen: View {
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(RoundedRectangle(cornerRadius: 22).fill(Theme.card))
+    }
+
+    private func reflectionMenu(for entry: Entry) -> some View {
+        Menu {
+            Button {
+                draftHeadline = entry.reflection.headline
+                draftObservations = entry.reflection.observations.joined(separator: "\n")
+                showReflectionEditor = true
+            } label: {
+                Label("Edit reflection", systemImage: "pencil")
+            }
+
+            Divider()
+
+            Button {
+                regenerateReflection(for: entry, style: .concise)
+            } label: {
+                Label("Make shorter", systemImage: "text.line.first.and.arrowtriangle.forward")
+            }
+
+            Button {
+                regenerateReflection(for: entry, style: .expanded)
+            } label: {
+                Label("Expand", systemImage: "text.append")
+            }
+
+            Button {
+                regenerateReflection(for: entry, style: .standard)
+            } label: {
+                Label("Reflect again", systemImage: "arrow.clockwise")
+            }
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.body.weight(.semibold))
+                .foregroundStyle(Theme.secondaryText)
+                .frame(width: 32, height: 28)
+                .contentShape(Rectangle())
+        }
+        .accessibilityLabel("Reflection options")
+    }
+
+    private func transcriptSection(for entry: Entry) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Transcript")
+                    .font(.footnote.weight(.medium))
+                    .foregroundStyle(Theme.secondaryText)
+                Spacer()
+                Button(entry.transcript.isEmpty ? "Add" : "Edit") {
+                    draftTranscript = entry.transcript.text
+                    showTranscriptEditor = true
+                }
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(Theme.primaryText)
+            }
+
+            if entry.transcript.isEmpty {
+                Text("Transcription unavailable. The original audio is preserved.")
+                    .font(.body)
+                    .foregroundStyle(Theme.secondaryText)
+            } else {
+                Text(entry.transcript.text)
+                    .font(.body)
+                    .lineSpacing(5)
+                    .foregroundStyle(Theme.primaryText.opacity(0.92))
+                    .textSelection(.enabled)
+            }
+        }
     }
 
     private func contextRow(for entry: Entry) -> some View {
@@ -345,15 +435,21 @@ struct EntryDetailScreen: View {
         showRetranscriptionLanguages = false
         guard !isRetranscribing else { return }
         isRetranscribing = true
-        retranscriptionError = nil
+        updateError = nil
 
         Task {
             do {
                 try await store.retranscribe(entryID: entry.id, locale: locale)
             } catch {
-                retranscriptionError = error.localizedDescription
+                updateError = error.localizedDescription
             }
             isRetranscribing = false
+        }
+    }
+
+    private func regenerateReflection(for entry: Entry, style: ReflectionStyle) {
+        Task {
+            await store.regenerateReflection(entryID: entry.id, style: style)
         }
     }
 
@@ -366,6 +462,136 @@ struct EntryDetailScreen: View {
         audioPlayer.rate == 1
             ? "1×"
             : "\(String(format: "%g", audioPlayer.rate))×"
+    }
+
+    private func transcriptEditor(for entry: Entry) -> some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Correct the words below. Saving will regenerate the reflection from the edited transcript.")
+                    .font(.footnote)
+                    .foregroundStyle(Theme.secondaryText)
+
+                TextEditor(text: $draftTranscript)
+                    .scrollContentBackground(.hidden)
+                    .padding(12)
+                    .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
+
+                Spacer()
+            }
+            .padding(20)
+            .background(Theme.background)
+            .navigationTitle("Edit transcript")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { showTranscriptEditor = false }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        Task {
+                            do {
+                                try await store.saveTranscript(
+                                    draftTranscript,
+                                    forEntryID: entry.id
+                                )
+                                showTranscriptEditor = false
+                            } catch {
+                                transcriptEditorError = error.localizedDescription
+                            }
+                        }
+                    }
+                    .fontWeight(.semibold)
+                    .disabled(
+                        draftTranscript.trimmingCharacters(
+                            in: .whitespacesAndNewlines
+                        ).isEmpty
+                    )
+                }
+            }
+        }
+        .alert(
+            "Entry could not be updated",
+            isPresented: Binding(
+                get: { transcriptEditorError != nil },
+                set: { if !$0 { transcriptEditorError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(transcriptEditorError ?? "")
+        }
+    }
+
+    private func reflectionEditor(for entry: Entry) -> some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Headline")
+                            .font(.footnote.weight(.medium))
+                            .foregroundStyle(Theme.secondaryText)
+                        TextField("Main observation", text: $draftHeadline, axis: .vertical)
+                            .textFieldStyle(.plain)
+                            .padding(12)
+                            .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Further observations")
+                            .font(.footnote.weight(.medium))
+                            .foregroundStyle(Theme.secondaryText)
+                        Text("Put each observation on a separate line. Up to three are kept.")
+                            .font(.caption)
+                            .foregroundStyle(Theme.tertiaryText)
+                        TextEditor(text: $draftObservations)
+                            .scrollContentBackground(.hidden)
+                            .padding(12)
+                            .frame(minHeight: 180)
+                            .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
+                    }
+                }
+                .padding(20)
+            }
+            .background(Theme.background)
+            .navigationTitle("Edit reflection")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { showReflectionEditor = false }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        let observations = draftObservations
+                            .split(whereSeparator: \.isNewline)
+                            .map(String.init)
+                        Task {
+                            do {
+                                try await store.saveReflection(
+                                    headline: draftHeadline,
+                                    observations: observations,
+                                    forEntryID: entry.id
+                                )
+                                showReflectionEditor = false
+                            } catch {
+                                reflectionEditorError = error.localizedDescription
+                            }
+                        }
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
+        }
+        .alert(
+            "Entry could not be updated",
+            isPresented: Binding(
+                get: { reflectionEditorError != nil },
+                set: { if !$0 { reflectionEditorError = nil } }
+            )
+        ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(reflectionEditorError ?? "")
+        }
     }
 
     private func contextEditor(for entry: Entry) -> some View {

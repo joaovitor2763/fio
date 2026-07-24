@@ -29,6 +29,23 @@ final class SwiftDataEntryRepository: EntryRepository {
         try context.save()
     }
 
+    func saveReflection(
+        _ reflection: Reflection,
+        forEntryID id: UUID,
+        ifUnchangedFrom expectedEntry: Entry
+    ) async throws -> Bool {
+        guard let existing = try record(withID: id),
+              existing.asDomain == expectedEntry else {
+            return false
+        }
+
+        existing.headline = reflection.headline
+        existing.observations = reflection.observations
+        existing.tags = reflection.tags
+        try context.save()
+        return true
+    }
+
     func deleteEntry(withID id: UUID) async throws {
         guard let existing = try record(withID: id) else { return }
         context.delete(existing)

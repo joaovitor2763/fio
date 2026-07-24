@@ -10,6 +10,7 @@ struct TimelineScreen: View {
     @State private var selectedDay = JournalCalendar().startOfDay(.now)
     @State private var datePickerSelection = JournalCalendar().startOfDay(.now)
     @State private var showDatePicker = false
+    @State private var showSearch = false
     @State private var isHeaderOverContent = false
 
     var body: some View {
@@ -89,38 +90,59 @@ struct TimelineScreen: View {
         .sheet(isPresented: $showDatePicker) {
             datePicker
         }
+        .sheet(isPresented: $showSearch) {
+            NavigationStack {
+                JournalSearchScreen()
+            }
+        }
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Button {
-                datePickerSelection = selectedDay
-                showDatePicker = true
-            } label: {
-                HStack(spacing: 8) {
-                    Text(
-                        selectedDay.formatted(
-                            .dateTime
-                                .month(.wide)
-                                .day()
-                                .year()
-                                .locale(locale)
+            HStack(spacing: 12) {
+                Button {
+                    datePickerSelection = selectedDay
+                    showDatePicker = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Text(
+                            selectedDay.formatted(
+                                .dateTime
+                                    .month(.wide)
+                                    .day()
+                                    .year()
+                                    .locale(locale)
+                            )
                         )
-                    )
-                    Image(systemName: "chevron.down")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Theme.tertiaryText)
+                        Image(systemName: "chevron.down")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Theme.tertiaryText)
+                    }
+                    .font(.system(size: 30, weight: .semibold))
+                    .foregroundStyle(Theme.primaryText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+                    .contentTransition(.numericText())
+                    .animation(reduceMotion ? Motion.quick : Motion.standard, value: selectedDay)
                 }
-                .font(.system(size: 30, weight: .semibold))
-                .foregroundStyle(Theme.primaryText)
-                .lineLimit(1)
-                .minimumScaleFactor(0.75)
-                .contentTransition(.numericText())
-                .animation(reduceMotion ? Motion.quick : Motion.standard, value: selectedDay)
-                .padding(.top, 8)
+                .buttonStyle(.plain)
+                .accessibilityHint("Opens the calendar")
+
+                Spacer(minLength: 4)
+
+                Button {
+                    showSearch = true
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(Theme.secondaryText)
+                        .frame(width: 40, height: 40)
+                        .background(Circle().fill(Theme.card))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Search your journal")
             }
-            .buttonStyle(.plain)
-            .accessibilityHint("Opens the calendar")
+            .padding(.top, 8)
 
             WeekStrip(
                 selectedDay: $selectedDay,

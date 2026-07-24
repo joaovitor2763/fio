@@ -54,6 +54,20 @@ final class InMemoryEntryRepository: EntryRepository, @unchecked Sendable {
         }
     }
 
+    func saveReflection(
+        _ reflection: Reflection,
+        forEntryID id: UUID,
+        ifUnchangedFrom expectedEntry: Entry
+    ) async throws -> Bool {
+        guard let index = storage.firstIndex(where: { $0.id == id }),
+              storage[index] == expectedEntry else {
+            return false
+        }
+        storage[index].reflection = reflection
+        saveCount += 1
+        return true
+    }
+
     func deleteEntry(withID id: UUID) async throws {
         storage.removeAll { $0.id == id }
     }
@@ -76,13 +90,44 @@ final class InMemoryReviewRepository: ReviewRepository, @unchecked Sendable {
 final class StubReflectionService: ReflectionService, @unchecked Sendable {
     var result: Reflection?
     private(set) var callCount = 0
+    private(set) var lastAuthorContext = ""
+    private(set) var lastStyle: ReflectionStyle?
+    private(set) var lastGuidance = ""
 
     init(result: Reflection? = nil) {
         self.result = result
     }
 
-    func reflect(on transcript: Transcript) async -> Reflection? {
+    func reflect(
+        on transcript: Transcript,
+        authorContext: String,
+        style: ReflectionStyle,
+        guidance: String
+    ) async -> Reflection? {
         callCount += 1
+        lastAuthorContext = authorContext
+        lastStyle = style
+        lastGuidance = guidance
+        return result
+    }
+}
+
+final class CallbackReflectionService: ReflectionService, @unchecked Sendable {
+    let result: Reflection
+    let onReflect: @Sendable () async -> Void
+
+    init(result: Reflection, onReflect: @escaping @Sendable () async -> Void) {
+        self.result = result
+        self.onReflect = onReflect
+    }
+
+    func reflect(
+        on transcript: Transcript,
+        authorContext: String,
+        style: ReflectionStyle,
+        guidance: String
+    ) async -> Reflection? {
+        await onReflect()
         return result
     }
 }
