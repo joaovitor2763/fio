@@ -859,6 +859,22 @@
     "Fio" : {
 
     },
+    "Fios" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fios"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fios"
+          }
+        }
+      }
+    },
     "Fio is reading this entry" : {
       "localizations" : {
         "es" : {
@@ -2349,18 +2365,18 @@
         }
       }
     },
-    "Words spoken" : {
+    "Words" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Palabras habladas"
+            "value" : "Palabras"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Palavras faladas"
+            "value" : "Palavras"
           }
         }
       }

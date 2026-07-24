@@ -4,6 +4,7 @@ import FioKit
 struct InsightsScreen: View {
     @Environment(JournalStore.self) private var store
     @Environment(\.locale) private var locale
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @AppStorage(AppAppearance.storageKey) private var appearance = AppAppearance.system.rawValue
     @AppStorage(InterfaceLanguage.storageKey) private var interfaceLanguage = InterfaceLanguage.english.rawValue
 
@@ -12,9 +13,9 @@ struct InsightsScreen: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 28) {
-                identityCard
-                metricGrid
+            VStack(alignment: .leading, spacing: 24) {
+                identityHeader
+                statisticsPanel
                 activitySection
                 speakingHoursSection
                 preferencesSection
@@ -30,65 +31,92 @@ struct InsightsScreen: View {
         .scrollResponsiveNavigationBar()
     }
 
-    private var identityCard: some View {
-        HStack(spacing: 14) {
+    private var identityHeader: some View {
+        HStack(spacing: 12) {
             Image(systemName: "waveform")
-                .font(.title2.weight(.medium))
-                .foregroundStyle(Theme.primaryControlForeground)
-                .frame(width: 54, height: 54)
-                .background(Circle().fill(Theme.primaryControlBackground))
+                .font(.body.weight(.semibold))
+                .foregroundStyle(Theme.primaryText)
+                .frame(width: 40, height: 40)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Theme.card)
+                )
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: 2) {
                 Text("Your private voice journal")
-                    .font(.headline)
+                    .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.primaryText)
                 Text("No account · only this iPhone")
-                    .font(.footnote)
+                    .font(.caption)
                     .foregroundStyle(Theme.secondaryText)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 22).fill(Theme.card))
     }
 
-    private var metricGrid: some View {
-        LazyVGrid(
-            columns: [
-                GridItem(.flexible(), spacing: 10),
-                GridItem(.flexible(), spacing: 10),
-            ],
-            spacing: 10
-        ) {
-            metricCard(
+    private var statisticsPanel: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: 0) {
+                    primaryMetric(
+                        value: statistics.totalWords.formatted(.number.notation(.compactName)),
+                        label: "Words"
+                    )
+
+                    Divider()
+                        .overlay(Theme.cardStroke)
+
+                    primaryMetric(
+                        value: usageDuration(statistics.totalDuration),
+                        label: "Time recorded"
+                    )
+
+                    Divider()
+                        .overlay(Theme.cardStroke)
+
+                    primaryMetric(
+                        value: "\(statistics.recordingCount)",
+                        label: "Fios"
+                    )
+                }
+            } else {
+                compactStatisticsRow
+            }
+        }
+        .padding(.vertical, 14)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Theme.card)
+        )
+    }
+
+    private var compactStatisticsRow: some View {
+        HStack(spacing: 0) {
+            primaryMetric(
                 value: statistics.totalWords.formatted(.number.notation(.compactName)),
-                label: "Words spoken"
+                label: "Words"
             )
-            metricCard(
+
+            Divider()
+                .overlay(Theme.cardStroke)
+
+            primaryMetric(
                 value: usageDuration(statistics.totalDuration),
                 label: "Time recorded"
             )
-            metricCard(
-                value: "\(statistics.currentStreak)",
-                label: "Current streak"
-            )
-            metricCard(
-                value: "\(statistics.longestStreak)",
-                label: "Longest streak"
-            )
-            metricCard(
-                value: "\(statistics.activeDayCount)",
-                label: "Active days"
-            )
-            metricCard(
+
+            Divider()
+                .overlay(Theme.cardStroke)
+
+            primaryMetric(
                 value: "\(statistics.recordingCount)",
-                label: "Recordings"
+                label: "Fios"
             )
         }
     }
 
-    private func metricCard(value: String, label: LocalizedStringKey) -> some View {
-        VStack(alignment: .leading, spacing: 5) {
+    private func primaryMetric(value: String, label: LocalizedStringKey) -> some View {
+        VStack(spacing: 5) {
             Text(value)
                 .font(.title2.weight(.semibold))
                 .foregroundStyle(Theme.primaryText)
@@ -96,13 +124,11 @@ struct InsightsScreen: View {
             Text(label)
                 .font(.caption)
                 .foregroundStyle(Theme.secondaryText)
+                .multilineTextAlignment(.center)
         }
-        .frame(maxWidth: .infinity, minHeight: 74, alignment: .leading)
-        .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(Theme.cardStroke, lineWidth: 1)
-        )
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(.horizontal, 16)
+        .padding(.vertical, dynamicTypeSize.isAccessibilitySize ? 12 : 0)
     }
 
     private var activitySection: some View {
