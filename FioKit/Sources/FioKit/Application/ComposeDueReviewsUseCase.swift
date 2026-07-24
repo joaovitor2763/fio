@@ -24,16 +24,34 @@ public struct ComposeDueReviewsUseCase: Sendable {
     }
 
     @discardableResult
-    public func execute(now: Date = .now) async throws -> [WeekReview] {
-        let allEntries = try await entries.allEntries()
+    public func execute(
+        entries providedEntries: [Entry]? = nil,
+        existingReviews providedReviews: [WeekReview]? = nil,
+        maximumReviews: Int? = nil,
+        now: Date = .now
+    ) async throws -> [WeekReview] {
+        let allEntries: [Entry]
+        if let providedEntries {
+            allEntries = providedEntries
+        } else {
+            allEntries = try await entries.allEntries()
+        }
         guard !allEntries.isEmpty else { return [] }
-        let existing = try await reviews.allReviews()
+        let existing: [WeekReview]
+        if let providedReviews {
+            existing = providedReviews
+        } else {
+            existing = try await reviews.allReviews()
+        }
 
-        let due = policy.dueWeeks(
+        var due = policy.dueWeeks(
             entries: allEntries,
             existingReviewWeekStarts: existing.map(\.weekStart),
             now: now
         )
+        if let maximumReviews {
+            due = Array(due.prefix(max(0, maximumReviews)))
+        }
 
         var created: [WeekReview] = []
         for week in due {

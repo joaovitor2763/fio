@@ -26,7 +26,38 @@ final class SwiftDataEntryRepository: EntryRepository {
         } else {
             context.insert(EntryRecord(from: entry))
         }
-        try context.save()
+        try saveOrRollback()
+    }
+
+    func replacePreservingReferences(
+        _ replacedID: UUID,
+        with entry: Entry
+    ) async throws {
+        do {
+            if let existing = try record(withID: entry.id) {
+                existing.apply(entry)
+            } else {
+                context.insert(EntryRecord(from: entry))
+            }
+            if let replaced = try record(withID: replacedID),
+               replaced.id != entry.id {
+                context.delete(replaced)
+            }
+            let topicRecords = try context.fetch(FetchDescriptor<TopicRecord>())
+            for topicRecord in topicRecords
+            where topicRecord.entryIDs.contains(replacedID) {
+                topicRecord.apply(
+                    topicRecord.asDomain.replacingEntryReference(
+                        from: replacedID,
+                        to: entry.id
+                    )
+                )
+            }
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 
     func saveReflection(
@@ -42,20 +73,29 @@ final class SwiftDataEntryRepository: EntryRepository {
         existing.headline = reflection.headline
         existing.observations = reflection.observations
         existing.tags = reflection.tags
-        try context.save()
+        try saveOrRollback()
         return true
     }
 
     func deleteEntry(withID id: UUID) async throws {
         guard let existing = try record(withID: id) else { return }
         context.delete(existing)
-        try context.save()
+        try saveOrRollback()
     }
 
     private func record(withID id: UUID) throws -> EntryRecord? {
         var descriptor = FetchDescriptor<EntryRecord>(predicate: #Predicate { $0.id == id })
         descriptor.fetchLimit = 1
         return try context.fetch(descriptor).first
+    }
+
+    private func saveOrRollback() throws {
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 }
 
@@ -82,7 +122,12 @@ final class SwiftDataReviewRepository: ReviewRepository {
         } else {
             context.insert(ReviewRecord(from: review))
         }
-        try context.save()
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
     }
 }
 
@@ -96,10 +141,12 @@ final class SwiftDataTopicRepository: TopicRepository {
     }
 
     func allTopics() async throws -> [Topic] {
-        let descriptor = FetchDescriptor<TopicRecord>(
-            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
-        )
-        return try context.fetch(descriptor).map(\.asDomain)
+        try PerformanceRecorder.measureSync("topic_records_fetch") {
+            let descriptor = FetchDescriptor<TopicRecord>(
+                sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+            )
+            return try context.fetch(descriptor).map(\.asDomain)
+        }
     }
 
     func save(_ topic: Topic) async throws {
@@ -128,29 +175,31 @@ final class SwiftDataTopicRepository: TopicRepository {
     }
 
     func replaceAll(with topics: [Topic]) async throws {
-        let existingRecords = try context.fetch(FetchDescriptor<TopicRecord>())
-        let desiredIDs = Set(topics.map(\.id))
-        var recordsByID = Dictionary(
-            uniqueKeysWithValues: existingRecords.map { ($0.id, $0) }
-        )
+        try PerformanceRecorder.measureSync("topics_replace_all") {
+            let existingRecords = try context.fetch(FetchDescriptor<TopicRecord>())
+            let desiredIDs = Set(topics.map(\.id))
+            var recordsByID = Dictionary(
+                uniqueKeysWithValues: existingRecords.map { ($0.id, $0) }
+            )
 
-        for record in existingRecords where !desiredIDs.contains(record.id) {
-            context.delete(record)
-            recordsByID.removeValue(forKey: record.id)
-        }
-        for topic in topics {
-            if let existing = recordsByID[topic.id] {
-                existing.apply(topic)
-            } else {
-                context.insert(TopicRecord(from: topic))
+            for record in existingRecords where !desiredIDs.contains(record.id) {
+                context.delete(record)
+                recordsByID.removeValue(forKey: record.id)
             }
-        }
+            for topic in topics {
+                if let existing = recordsByID[topic.id] {
+                    existing.apply(topic)
+                } else {
+                    context.insert(TopicRecord(from: topic))
+                }
+            }
 
-        do {
-            try context.save()
-        } catch {
-            context.rollback()
-            throw error
+            do {
+                try context.save()
+            } catch {
+                context.rollback()
+                throw error
+            }
         }
     }
 

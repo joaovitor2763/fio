@@ -7,6 +7,7 @@ struct TimelineScreen: View {
     @Environment(\.locale) private var locale
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     let navigationNamespace: Namespace.ID
+    let retryLoad: @MainActor () async -> Void
     @State private var selectedDay = JournalCalendar().startOfDay(.now)
     @State private var datePickerSelection = JournalCalendar().startOfDay(.now)
     @State private var showDatePicker = false
@@ -16,6 +17,13 @@ struct TimelineScreen: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 10) {
+                if store.loadErrorMessage == nil,
+                   let maintenanceErrorMessage = store.maintenanceErrorMessage {
+                    JournalMaintenanceBanner(message: maintenanceErrorMessage) {
+                        Task { await retryLoad() }
+                    }
+                }
+
                 if store.calendar.isSameDay(selectedDay, .now),
                    let latest = store.latestReview {
                     let route = Route.review(latest.id, source: .timeline)
@@ -38,23 +46,27 @@ struct TimelineScreen: View {
                     .buttonStyle(CardButtonStyle())
                 }
 
-                if store.isLoaded {
+                if let loadErrorMessage = store.loadErrorMessage {
+                    loadFailureState(message: loadErrorMessage)
+                } else if store.isLoaded {
                     selectedDayContent
                         .id(selectedDay)
                         .transition(dayContentTransition)
+                } else {
+                    loadingState
                 }
             }
             .padding(.horizontal, 16)
             .padding(.top, 18)
             .padding(.bottom, 90)
             .animation(reduceMotion ? Motion.quick : Motion.standard, value: selectedDay)
-            .animation(Motion.standard, value: store.isLoaded)
+            .animation(reduceMotion ? Motion.quick : Motion.standard, value: store.isLoaded)
         }
         .scrollBounceBehavior(.basedOnSize)
         .onScrollGeometryChange(for: Bool.self) { geometry in
             geometry.contentOffset.y + geometry.contentInsets.top > 4
         } action: { _, isScrolled in
-            withAnimation(.easeInOut(duration: 0.22)) {
+            withAnimation(reduceMotion ? Motion.quick : Motion.standard) {
                 isHeaderOverContent = isScrolled
             }
         }
@@ -149,6 +161,7 @@ struct TimelineScreen: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Search your journal")
+                .accessibilityIdentifier("journal-search-button")
             }
             .padding(.top, 8)
 
@@ -211,6 +224,36 @@ struct TimelineScreen: View {
             .foregroundStyle(Theme.secondaryText)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 28)
+    }
+
+    private var loadingState: some View {
+        HStack(spacing: 10) {
+            ProgressView()
+                .controlSize(.small)
+            Text("Opening your journal…")
+                .font(.subheadline)
+                .foregroundStyle(Theme.secondaryText)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 28)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func loadFailureState(message: String) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Your journal is still on this iPhone")
+                .font(.headline)
+                .foregroundStyle(Theme.primaryText)
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(Theme.secondaryText)
+            Button("Try again") {
+                Task { await retryLoad() }
+            }
+            .buttonStyle(.bordered)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 28)
     }
 
     private var datePicker: some View {

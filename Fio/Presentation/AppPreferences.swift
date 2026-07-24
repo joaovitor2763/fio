@@ -67,6 +67,7 @@ enum DreamScheduleState {
     private static let analyzedThroughKey = "dreamAnalyzedThrough"
     private static let corpusRevisionKey = "dreamCorpusRevision"
     private static let analyzedRevisionKey = "dreamAnalyzedRevision"
+    private static let lastSuccessfulRunKey = "dreamLastSuccessfulRun"
 
     static var currentRevision: Int {
         UserDefaults.standard.integer(forKey: corpusRevisionKey)
@@ -83,10 +84,27 @@ enum DreamScheduleState {
                 > UserDefaults.standard.double(forKey: analyzedThroughKey)
     }
 
+    static func shouldRunAutomatically(
+        latestEntryDate: Date,
+        now: Date = .now,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> Bool {
+        guard needsAnalysis(latestEntryDate: latestEntryDate) else {
+            return false
+        }
+        guard let lastSuccessfulRun = UserDefaults.standard.object(
+            forKey: lastSuccessfulRunKey
+        ) as? Date else {
+            return true
+        }
+        return !calendar.isDate(lastSuccessfulRun, inSameDayAs: now)
+    }
+
     @discardableResult
     static func markAnalyzed(
         through date: Date,
-        ifRevisionIs expectedRevision: Int
+        ifRevisionIs expectedRevision: Int,
+        completedAt: Date = .now
     ) -> Bool {
         guard currentRevision == expectedRevision else { return false }
         UserDefaults.standard.set(
@@ -96,6 +114,10 @@ enum DreamScheduleState {
         UserDefaults.standard.set(
             expectedRevision,
             forKey: analyzedRevisionKey
+        )
+        UserDefaults.standard.set(
+            completedAt,
+            forKey: lastSuccessfulRunKey
         )
         return true
     }

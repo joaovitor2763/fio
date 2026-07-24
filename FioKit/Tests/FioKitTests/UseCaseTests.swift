@@ -69,6 +69,25 @@ final class RecordEntryUseCaseTests: XCTestCase {
         XCTAssertNil(entry)
         XCTAssertEqual(repository.storage.map(\.id), [old.id])
     }
+
+    func testPersistenceFailureKeepsTheOldEntryWithoutADuplicate() async throws {
+        let repository = InMemoryEntryRepository()
+        let old = makeEntry()
+        try await repository.save(old)
+        repository.shouldFailReplacement = true
+        let useCase = RecordEntryUseCase(entries: repository)
+
+        do {
+            _ = try await useCase.execute(
+                transcriptText: "A replacement that cannot be persisted",
+                duration: 42,
+                replacing: old.id
+            )
+            XCTFail("Expected replacement persistence to fail")
+        } catch StubRepositoryError.expectedFailure {
+            XCTAssertEqual(repository.storage.map(\.id), [old.id])
+        }
+    }
 }
 
 final class AnnotateEntryUseCaseTests: XCTestCase {

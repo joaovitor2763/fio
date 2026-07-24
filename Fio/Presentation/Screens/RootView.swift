@@ -12,6 +12,7 @@ struct RootView: View {
     @State private var isTextEntryArmed = false
     @State private var utilityDestination: UtilityDestination?
     @State private var holdActivationTask: Task<Void, Never>?
+    @State private var hasCompletedInitialLoad = false
 
     var body: some View {
         ZStack {
@@ -35,15 +36,12 @@ struct RootView: View {
             oldValue == nil && newValue != nil
         }
         .task {
-            async let preloadAssets: Void = RecordingSession.preloadTranscriptionAssets()
-            await store.refresh()
-            await store.composeDueReviews()
-            await preloadAssets
-            DreamScheduler.schedule()
-            await store.runDreamIfNeeded()
+            await loadJournal()
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active {
+            if phase == .active,
+               hasCompletedInitialLoad,
+               store.isLoaded {
                 Task {
                     await store.composeDueReviews()
                     await store.runDreamIfNeeded()
@@ -54,9 +52,21 @@ struct RootView: View {
         }
     }
 
+    private func preloadTranscriptionAssetsIfNeeded() async {
+#if DEBUG
+        guard ProcessInfo.processInfo.environment["FIO_UI_TESTING"] != "1" else {
+            return
+        }
+#endif
+        await RecordingSession.preloadTranscriptionAssets()
+    }
+
     private var timelineNavigation: some View {
         NavigationStack {
-            TimelineScreen(navigationNamespace: navigationNamespace)
+            TimelineScreen(
+                navigationNamespace: navigationNamespace,
+                retryLoad: loadJournal
+            )
                 .navigationDestination(for: Route.self) { route in
                     routeScreen(route)
                 }
@@ -70,6 +80,29 @@ struct RootView: View {
         }
     }
 
+    private func loadJournal() async {
+        await store.refresh()
+        hasCompletedInitialLoad = true
+        PerformanceRecorder.markFirstContentReady()
+#if DEBUG
+        await PerformanceFixture.runOperationsIfRequested(store: store)
+#endif
+        guard store.isLoaded else {
+            await preloadTranscriptionAssetsIfNeeded()
+            return
+        }
+#if DEBUG
+        if ProcessInfo.processInfo.environment["FIO_UI_TESTING"] == "1" {
+            return
+        }
+#endif
+        async let preloadAssets: Void = preloadTranscriptionAssetsIfNeeded()
+        await store.composeDueReviews()
+        await preloadAssets
+        DreamScheduler.schedule()
+        await store.runDreamIfNeeded()
+    }
+
     private var bottomActions: some View {
         HStack(spacing: 42) {
             Button {
@@ -79,6 +112,7 @@ struct RootView: View {
             }
             .buttonStyle(UtilityActionButtonStyle())
             .accessibilityLabel("Fio profile and insights")
+            .accessibilityIdentifier("insights-button")
 
             recordButton
 
@@ -89,6 +123,7 @@ struct RootView: View {
             }
             .buttonStyle(UtilityActionButtonStyle())
             .accessibilityLabel("Weekly reviews")
+            .accessibilityIdentifier("reviews-button")
         }
         .frame(maxWidth: .infinity)
     }
@@ -174,6 +209,7 @@ struct RootView: View {
         }
         .accessibilityAddTraits(.isButton)
         .accessibilityLabel("Record an entry")
+        .accessibilityIdentifier("record-entry-button")
         .accessibilityHint("Touch and hold to write instead")
         .accessibilityAction {
             showRecorder = true
@@ -188,7 +224,7 @@ struct RootView: View {
             .onChanged { value in
                 guard !isRecordButtonPressed else { return }
 
-                withAnimation(Motion.quick) {
+                withAnimation(reduceMotion ? nil : Motion.quick) {
                     isRecordButtonPressed = true
                 }
 
@@ -197,7 +233,7 @@ struct RootView: View {
                     try? await Task.sleep(for: .milliseconds(450))
                     guard !Task.isCancelled, isRecordButtonPressed else { return }
 
-                    withAnimation(Motion.contextual) {
+                    withAnimation(reduceMotion ? nil : Motion.contextual) {
                         isTextEntryArmed = true
                     }
                 }
@@ -211,7 +247,7 @@ struct RootView: View {
                     abs(value.translation.height) < 72
                 let shouldWrite = isTextEntryArmed && stayedNearButton
 
-                withAnimation(Motion.quick) {
+                withAnimation(reduceMotion ? nil : Motion.quick) {
                     isRecordButtonPressed = false
                     isTextEntryArmed = false
                 }

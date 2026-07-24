@@ -105,112 +105,6 @@ struct TopicPill: View {
     }
 }
 
-// MARK: - Waveform
-
-/// Tight vertical bars mirrored around the midline, newest on the right.
-struct WaveformView: View {
-    let levels: [Float]
-    let isLive: Bool
-
-    var body: some View {
-        HStack(alignment: .center, spacing: 3) {
-            ForEach(Array(levels.enumerated()), id: \.offset) { _, level in
-                Capsule()
-                    .fill(Theme.primaryText)
-                    .frame(width: 3, height: max(4, CGFloat(level) * 80))
-            }
-        }
-        .frame(maxWidth: .infinity)
-        .opacity(isLive ? 1 : 0.45)
-        .animation(.linear(duration: 0.1), value: levels)
-        .animation(.easeInOut(duration: 0.25), value: isLive)
-    }
-}
-
-// MARK: - Week strip
-
-/// Seven day cells, Monday first, dots under days that have entries.
-struct WeekStrip: View {
-    @Binding var selectedDay: Date
-    let daysWithEntries: Set<Date>
-    let calendar: JournalCalendar
-    let allowedDates: ClosedRange<Date>
-    @Environment(\.locale) private var locale
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    var body: some View {
-        HStack(spacing: 8) {
-            ForEach(calendar.weekDays(containing: selectedDay), id: \.self) { day in
-                dayCell(day)
-            }
-        }
-        .id(calendar.weekStart(containing: selectedDay))
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 20)
-                .onEnded { value in
-                    guard abs(value.translation.width) > abs(value.translation.height),
-                          abs(value.translation.width) > 44 else { return }
-                    moveWeek(by: value.translation.width < 0 ? 1 : -1)
-                }
-        )
-        .sensoryFeedback(.selection, trigger: selectedDay)
-        .accessibilityAction(named: Text("Previous week")) {
-            moveWeek(by: -1)
-        }
-        .accessibilityAction(named: Text("Next week")) {
-            moveWeek(by: 1)
-        }
-    }
-
-    private func dayCell(_ day: Date) -> some View {
-        let isSelected = calendar.isSameDay(day, selectedDay)
-        let isFuture = day > calendar.startOfDay(.now)
-        let hasEntries = daysWithEntries.contains(calendar.startOfDay(day))
-
-        return Button {
-            withAnimation(reduceMotion ? Motion.quick : Motion.standard) {
-                selectedDay = calendar.startOfDay(day)
-            }
-        } label: {
-            VStack(spacing: 5) {
-                Text(day.formatted(.dateTime.weekday(.narrow).locale(locale)))
-                    .font(.caption2)
-                    .foregroundStyle(Theme.tertiaryText)
-                Text("\(calendar.dayNumber(of: day))")
-                    .font(.callout.weight(.medium))
-                    .foregroundStyle(isFuture ? Theme.tertiaryText : Theme.primaryText)
-                Circle()
-                    .fill(hasEntries ? Theme.secondaryText : .clear)
-                    .frame(width: 4, height: 4)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Theme.primaryText : .clear, lineWidth: 1)
-            )
-            .contentShape(RoundedRectangle(cornerRadius: 12))
-        }
-        .buttonStyle(.plain)
-        .disabled(isFuture)
-    }
-
-    private func moveWeek(by offset: Int) {
-        guard let candidate = calendar.calendar.date(
-            byAdding: .day,
-            value: offset * 7,
-            to: selectedDay
-        ) else { return }
-
-        let bounded = min(max(calendar.startOfDay(candidate), allowedDates.lowerBound), allowedDates.upperBound)
-        guard !calendar.isSameDay(bounded, selectedDay) else { return }
-
-        withAnimation(reduceMotion ? Motion.quick : Motion.standard) {
-            selectedDay = bounded
-        }
-    }
-}
-
 // MARK: - Cards
 
 struct EntryCard: View {
@@ -254,14 +148,23 @@ struct EntryCard: View {
 /// A tiny pulse shown while the observer is reading a fresh entry.
 struct ReadingDot: View {
     @State private var pulsing = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Circle()
             .fill(Theme.secondaryText)
             .frame(width: 5, height: 5)
-            .opacity(pulsing ? 0.25 : 1)
-            .animation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true), value: pulsing)
-            .onAppear { pulsing = true }
+            .opacity(pulsing && !reduceMotion ? 0.25 : 1)
+            .animation(
+                reduceMotion
+                    ? nil
+                    : .easeInOut(duration: 0.8).repeatForever(autoreverses: true),
+                value: pulsing
+            )
+            .onAppear { pulsing = !reduceMotion }
+            .onChange(of: reduceMotion) { _, shouldReduce in
+                pulsing = !shouldReduce
+            }
             .accessibilityLabel("Fio is reading this entry")
     }
 }

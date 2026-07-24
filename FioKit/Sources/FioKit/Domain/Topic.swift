@@ -40,6 +40,20 @@ public struct Topic: Identifiable, Equatable, Hashable, Sendable, Codable {
         entryIDs.contains(entryID)
     }
 
+    public func replacingEntryReference(
+        from oldID: UUID,
+        to newID: UUID,
+        updatedAt: Date = .now
+    ) -> Topic {
+        guard entryIDs.contains(oldID) else { return self }
+        var updated = self
+        updated.entryIDs = Self.unique(
+            entryIDs.map { $0 == oldID ? newID : $0 }
+        )
+        updated.updatedAt = updatedAt
+        return updated
+    }
+
     /// Keeps topic names compact without imposing an English-only title case.
     public static func sanitizedName(_ raw: String) -> String? {
         let collapsed = raw

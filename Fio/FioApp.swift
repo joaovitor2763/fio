@@ -7,22 +7,30 @@ import FioKit
 /// into the domain's ports. Nothing else in the app knows about both sides.
 @main
 struct FioApp: App {
-    private let container: ModelContainer
-    @State private var store: JournalStore
+    private let container: ModelContainer?
+    @State private var store: JournalStore?
     @AppStorage(AppAppearance.storageKey) private var appearance = AppAppearance.system.rawValue
     @AppStorage(InterfaceLanguage.storageKey) private var interfaceLanguage = InterfaceLanguage.english.rawValue
 
     init() {
+        PerformanceRecorder.beginLaunch()
+        let persistentContainer: ModelContainer
         do {
-            container = try ModelContainer(
+            persistentContainer = try ModelContainer(
                 for: EntryRecord.self,
                 ReviewRecord.self,
                 TopicRecord.self
             )
         } catch {
-            fatalError("Could not open the journal store: \(error)")
+            container = nil
+            _store = State(initialValue: nil)
+            return
         }
-        let context = container.mainContext
+        container = persistentContainer
+        let context = persistentContainer.mainContext
+#if DEBUG
+        PerformanceFixture.seedIfRequested(in: context)
+#endif
         let topicRepository = SwiftDataTopicRepository(context: context)
         let journalStore = JournalStore(
             entryRepository: SwiftDataEntryRepository(context: context),
@@ -51,10 +59,16 @@ struct FioApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environment(store)
-                .environment(\.locale, selectedLanguage.locale)
-                .preferredColorScheme(selectedAppearance.colorScheme)
+            Group {
+                if let store {
+                    RootView()
+                        .environment(store)
+                } else {
+                    JournalUnavailableView()
+                }
+            }
+            .environment(\.locale, selectedLanguage.locale)
+            .preferredColorScheme(selectedAppearance.colorScheme)
         }
     }
 
@@ -64,5 +78,29 @@ struct FioApp: App {
 
     private var selectedLanguage: InterfaceLanguage {
         InterfaceLanguage(rawValue: interfaceLanguage) ?? .english
+    }
+}
+
+private struct JournalUnavailableView: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "exclamationmark.lock.fill")
+                .font(.system(size: 34, weight: .medium))
+                .foregroundStyle(Theme.secondaryText)
+                .accessibilityHidden(true)
+
+            Text("Fio could not open your journal")
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(Theme.primaryText)
+
+            Text("Your entries remain on this iPhone. Close and reopen Fio to try again.")
+                .font(.body)
+                .foregroundStyle(Theme.secondaryText)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 320)
+        }
+        .padding(32)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Theme.background)
     }
 }

@@ -43,15 +43,19 @@ private extension UIColor {
 
 /// Card press feedback: a slight settle instead of an opacity flash.
 struct CardButtonStyle: ButtonStyle {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.985 : 1)
-            .animation(Motion.quick, value: configuration.isPressed)
+            .animation(reduceMotion ? nil : Motion.quick, value: configuration.isPressed)
     }
 }
 
 /// Immediate touch feedback for the small utility actions around the recorder.
 struct UtilityActionButtonStyle: ButtonStyle {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .background {
@@ -61,7 +65,7 @@ struct UtilityActionButtonStyle: ButtonStyle {
                     .opacity(configuration.isPressed ? 1 : 0)
             }
             .scaleEffect(configuration.isPressed ? 0.90 : 1)
-            .animation(Motion.quick, value: configuration.isPressed)
+            .animation(reduceMotion ? nil : Motion.quick, value: configuration.isPressed)
     }
 }
 

@@ -10,14 +10,30 @@
 		5A7E00010000000000000012 /* FioKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5A7E00010000000000000011 /* FioKit */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		5A7E0002000000000000000A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5A7E00010000000000000006 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5A7E00010000000000000005;
+			remoteInfo = Fio;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		5A7E00010000000000000004 /* Fio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fio.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A7E00020000000000000002 /* FioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FioUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5A7E00010000000000000001 /* Fio */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Fio;
+			sourceTree = "<group>";
+		};
+		5A7E00020000000000000001 /* FioUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = FioUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -31,6 +47,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5A7E00020000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -38,6 +61,7 @@
 			isa = PBXGroup;
 			children = (
 				5A7E00010000000000000001 /* Fio */,
+				5A7E00020000000000000001 /* FioUITests */,
 				5A7E00010000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				5A7E00010000000000000004 /* Fio.app */,
+				5A7E00020000000000000002 /* FioUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -76,6 +101,29 @@
 			productReference = 5A7E00010000000000000004 /* Fio.app */;
 			productType = "com.apple.product-type.application";
 		};
+		5A7E00020000000000000003 /* FioUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A7E00020000000000000007 /* Build configuration list for PBXNativeTarget "FioUITests" */;
+			buildPhases = (
+				5A7E00020000000000000004 /* Sources */,
+				5A7E00020000000000000005 /* Frameworks */,
+				5A7E00020000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5A7E0002000000000000000B /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5A7E00020000000000000001 /* FioUITests */,
+			);
+			name = FioUITests;
+			packageProductDependencies = (
+			);
+			productName = FioUITests;
+			productReference = 5A7E00020000000000000002 /* FioUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -88,6 +136,10 @@
 				TargetAttributes = {
 					5A7E00010000000000000005 = {
 						CreatedOnToolsVersion = 26.0;
+					};
+					5A7E00020000000000000003 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 5A7E00010000000000000005;
 					};
 				};
 			};
@@ -109,12 +161,20 @@
 			projectRoot = "";
 			targets = (
 				5A7E00010000000000000005 /* Fio */,
+				5A7E00020000000000000003 /* FioUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		5A7E00010000000000000009 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5A7E00020000000000000006 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -131,7 +191,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5A7E00020000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5A7E0002000000000000000B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5A7E00010000000000000005 /* Fio */;
+			targetProxy = 5A7E0002000000000000000A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		5A7E0001000000000000000C /* Debug */ = {
@@ -321,6 +396,54 @@
 			};
 			name = Release;
 		};
+		5A7E00020000000000000008 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J3L7J4J4GT;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.joaovitorsilva.fio.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Fio;
+			};
+			name = Debug;
+		};
+		5A7E00020000000000000009 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = J3L7J4J4GT;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.joaovitorsilva.fio.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_TARGET_NAME = Fio;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -338,6 +461,15 @@
 			buildConfigurations = (
 				5A7E0001000000000000000E /* Debug */,
 				5A7E0001000000000000000F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5A7E00020000000000000007 /* Build configuration list for PBXNativeTarget "FioUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A7E00020000000000000008 /* Debug */,
+				5A7E00020000000000000009 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

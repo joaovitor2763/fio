@@ -6,12 +6,21 @@ import Foundation
 enum DreamScheduler {
     static let identifier = "com.joaovitorsilva.fio.dream"
 
-    static func schedule() {
+    static func schedule(
+        now: Date = .now,
+        calendar: Calendar = .autoupdatingCurrent
+    ) {
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: identifier)
         let request = BGProcessingTaskRequest(identifier: identifier)
         request.requiresExternalPower = true
         request.requiresNetworkConnectivity = false
-        request.earliestBeginDate = Date().addingTimeInterval(2 * 60 * 60)
+        request.earliestBeginDate = calendar.nextDate(
+            after: now,
+            matching: DateComponents(hour: 2),
+            matchingPolicy: .nextTime,
+            repeatedTimePolicy: .first,
+            direction: .forward
+        ) ?? now.addingTimeInterval(24 * 60 * 60)
         try? BGTaskScheduler.shared.submit(request)
     }
 }

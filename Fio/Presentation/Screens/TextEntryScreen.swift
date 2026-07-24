@@ -19,6 +19,7 @@ struct TextEntryScreen: View {
                 Theme.background.ignoresSafeArea()
 
                 TextEditor(text: $text)
+                    .accessibilityIdentifier("text-entry-editor")
                     .focused($isEditorFocused)
                     .font(.body)
                     .lineSpacing(5)

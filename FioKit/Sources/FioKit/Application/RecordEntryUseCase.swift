@@ -29,9 +29,13 @@ public struct RecordEntryUseCase: Sendable {
             transcript: transcript,
             audioFileName: audioFileName
         )
-        try await entries.save(entry)
         if let replacedID, replacedID != entry.id {
-            try await entries.deleteEntry(withID: replacedID)
+            try await entries.replacePreservingReferences(
+                replacedID,
+                with: entry
+            )
+        } else {
+            try await entries.save(entry)
         }
         return entry
     }

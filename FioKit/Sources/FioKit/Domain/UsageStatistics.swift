@@ -18,6 +18,35 @@ public struct UsageStatistics: Equatable, Sendable {
         calendar: JournalCalendar = JournalCalendar(),
         now: Date = .now
     ) -> UsageStatistics {
+        calculate(
+            entries: entries,
+            calendar: calendar,
+            now: now,
+            shouldCancel: { false }
+        )!
+    }
+
+    /// Background caches use this variant so superseded journal scans stop
+    /// promptly instead of competing with the latest snapshot.
+    public static func calculateUnlessCancelled(
+        entries: [Entry],
+        calendar: JournalCalendar = JournalCalendar(),
+        now: Date = .now
+    ) -> UsageStatistics? {
+        calculate(
+            entries: entries,
+            calendar: calendar,
+            now: now,
+            shouldCancel: { Task.isCancelled }
+        )
+    }
+
+    private static func calculate(
+        entries: [Entry],
+        calendar: JournalCalendar,
+        now: Date,
+        shouldCancel: () -> Bool
+    ) -> UsageStatistics? {
         var totalWords = 0
         var totalDuration: TimeInterval = 0
         var longestRecording: TimeInterval = 0
@@ -25,6 +54,7 @@ public struct UsageStatistics: Equatable, Sendable {
         var durationByDay: [Date: TimeInterval] = [:]
 
         for entry in entries {
+            guard !shouldCancel() else { return nil }
             totalWords += entry.transcript.wordCount
             totalDuration += entry.duration
             longestRecording = max(longestRecording, entry.duration)
@@ -36,6 +66,7 @@ public struct UsageStatistics: Equatable, Sendable {
             durationByDay[day, default: 0] += entry.duration
         }
 
+        guard !shouldCancel() else { return nil }
         let activeDays = durationByDay.keys.sorted()
         let peakHour = hourlyRecordingCounts.max().flatMap { maximum in
             maximum > 0 ? hourlyRecordingCounts.firstIndex(of: maximum) : nil
@@ -49,11 +80,13 @@ public struct UsageStatistics: Equatable, Sendable {
             currentStreak: currentStreak(
                 activeDays: Set(activeDays),
                 calendar: calendar,
-                now: now
+                now: now,
+                shouldCancel: shouldCancel
             ),
             longestStreak: longestStreak(
                 activeDays: activeDays,
-                calendar: calendar
+                calendar: calendar,
+                shouldCancel: shouldCancel
             ),
             longestRecording: longestRecording,
             peakHour: peakHour,
@@ -65,7 +98,8 @@ public struct UsageStatistics: Equatable, Sendable {
     private static func currentStreak(
         activeDays: Set<Date>,
         calendar: JournalCalendar,
-        now: Date
+        now: Date,
+        shouldCancel: () -> Bool
     ) -> Int {
         let today = calendar.startOfDay(now)
         let yesterday = calendar.calendar.date(byAdding: .day, value: -1, to: today)!
@@ -81,6 +115,7 @@ public struct UsageStatistics: Equatable, Sendable {
 
         var count = 0
         while activeDays.contains(cursor) {
+            if shouldCancel() { return 0 }
             count += 1
             cursor = calendar.calendar.date(byAdding: .day, value: -1, to: cursor)!
         }
@@ -89,7 +124,8 @@ public struct UsageStatistics: Equatable, Sendable {
 
     private static func longestStreak(
         activeDays: [Date],
-        calendar: JournalCalendar
+        calendar: JournalCalendar,
+        shouldCancel: () -> Bool
     ) -> Int {
         guard let first = activeDays.first else { return 0 }
         var longest = 1
@@ -97,6 +133,7 @@ public struct UsageStatistics: Equatable, Sendable {
         var previous = first
 
         for day in activeDays.dropFirst() {
+            if shouldCancel() { return 0 }
             let expected = calendar.calendar.date(byAdding: .day, value: 1, to: previous)!
             if calendar.isSameDay(day, expected) {
                 current += 1

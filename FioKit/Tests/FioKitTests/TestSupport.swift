@@ -38,8 +38,13 @@ func makeEntry(
 final class InMemoryEntryRepository: EntryRepository, @unchecked Sendable {
     private(set) var storage: [Entry] = []
     private(set) var saveCount = 0
+    private(set) var allEntriesCallCount = 0
+    var shouldFailReplacement = false
 
-    func allEntries() async throws -> [Entry] { storage }
+    func allEntries() async throws -> [Entry] {
+        allEntriesCallCount += 1
+        return storage
+    }
 
     func entry(withID id: UUID) async throws -> Entry? {
         storage.first { $0.id == id }
@@ -52,6 +57,18 @@ final class InMemoryEntryRepository: EntryRepository, @unchecked Sendable {
         } else {
             storage.append(entry)
         }
+    }
+
+    func replacePreservingReferences(
+        _ replacedID: UUID,
+        with entry: Entry
+    ) async throws {
+        guard !shouldFailReplacement else {
+            throw StubRepositoryError.expectedFailure
+        }
+        storage.removeAll { $0.id == replacedID || $0.id == entry.id }
+        storage.append(entry)
+        saveCount += 1
     }
 
     func saveReflection(
@@ -73,10 +90,18 @@ final class InMemoryEntryRepository: EntryRepository, @unchecked Sendable {
     }
 }
 
+enum StubRepositoryError: Error {
+    case expectedFailure
+}
+
 final class InMemoryReviewRepository: ReviewRepository, @unchecked Sendable {
     private(set) var storage: [WeekReview] = []
+    private(set) var allReviewsCallCount = 0
 
-    func allReviews() async throws -> [WeekReview] { storage }
+    func allReviews() async throws -> [WeekReview] {
+        allReviewsCallCount += 1
+        return storage
+    }
 
     func save(_ review: WeekReview) async throws {
         if let index = storage.firstIndex(where: { $0.id == review.id }) {
@@ -89,8 +114,13 @@ final class InMemoryReviewRepository: ReviewRepository, @unchecked Sendable {
 
 final class InMemoryTopicRepository: TopicRepository, @unchecked Sendable {
     private(set) var storage: [Topic] = []
+    private(set) var allTopicsCallCount = 0
+    private(set) var replaceAllCallCount = 0
 
-    func allTopics() async throws -> [Topic] { storage }
+    func allTopics() async throws -> [Topic] {
+        allTopicsCallCount += 1
+        return storage
+    }
 
     func save(_ topic: Topic) async throws {
         if let index = storage.firstIndex(where: { $0.id == topic.id }) {
@@ -105,6 +135,7 @@ final class InMemoryTopicRepository: TopicRepository, @unchecked Sendable {
     }
 
     func replaceAll(with topics: [Topic]) async throws {
+        replaceAllCallCount += 1
         storage = topics
     }
 }

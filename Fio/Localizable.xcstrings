@@ -374,7 +374,20 @@
       }
     },
     "Audio position" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posición del audio"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posição do áudio"
+          }
+        }
+      }
     },
     "Automatic" : {
       "localizations" : {
@@ -504,6 +517,38 @@
         }
       }
     },
+    "Consolidate topics now" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consolidar temas ahora"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consolidar temas agora"
+          }
+        }
+      }
+    },
+    "Consolidating topics…" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consolidando temas…"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consolidando temas…"
+          }
+        }
+      }
+    },
     "Create reflection" : {
       "localizations" : {
         "es" : {
@@ -548,6 +593,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escuro"
+          }
+        }
+      }
+    },
+    "Automatic Dream runs at most once a day, privately on this iPhone." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dream automático se ejecuta como máximo una vez al día, de forma privada en este iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Dream automático roda no máximo uma vez por dia, de forma privada neste iPhone."
+          }
+        }
+      }
+    },
+    "Dream is unavailable right now. Try again later." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dream no está disponible ahora. Inténtalo de nuevo más tarde."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Dream não está disponível agora. Tente novamente mais tarde."
           }
         }
       }
@@ -859,6 +936,38 @@
     "Fio" : {
 
     },
+    "Fio could not open your journal" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fio no pudo abrir tu diario"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fio não conseguiu abrir seu diário"
+          }
+        }
+      }
+    },
+    "Fio could not open your journal. Your entries remain on this iPhone." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fio no pudo abrir tu diario. Tus entradas siguen en este iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fio não conseguiu abrir seu diário. Suas entradas continuam neste iPhone."
+          }
+        }
+      }
+    },
     "Fios" : {
       "localizations" : {
         "es" : {
@@ -908,7 +1017,20 @@
       }
     },
     "Fio profile and insights" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil e información de Fio"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perfil e insights do Fio"
+          }
+        }
+      }
     },
     "Fio will apply this on future transcriptions before creating a reflection." : {
       "localizations" : {
@@ -1530,7 +1652,20 @@
       }
     },
     "Playback speed %@" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velocidad de reproducción %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velocidade de reprodução %@"
+          }
+        }
+      }
     },
     "Portuguese (Brazil)" : {
       "localizations" : {
@@ -2237,6 +2372,22 @@
         }
       }
     },
+    "Try again" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Intentar de nuevo"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar novamente"
+          }
+        }
+      }
+    },
     "Try a different word or phrase." : {
       "localizations" : {
         "es" : {
@@ -2701,6 +2852,22 @@
         }
       }
     },
+    "Topics consolidated on this iPhone." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temas consolidados en este iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Temas consolidados neste iPhone."
+          }
+        }
+      }
+    },
     "Topics stay attached even when the reflection changes." : {
       "localizations" : {
         "es" : {
@@ -2797,6 +2964,38 @@
         }
       }
     },
+    "Your entries are ready, but some journal details could not be updated." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus entradas están listas, pero algunos detalles del diario no se pudieron actualizar."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas entradas estão prontas, mas alguns detalhes do diário não puderam ser atualizados."
+          }
+        }
+      }
+    },
+    "Your entries remain on this iPhone. Close and reopen Fio to try again." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus entradas siguen en este iPhone. Cierra y vuelve a abrir Fio para intentarlo de nuevo."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas entradas continuam neste iPhone. Feche e abra o Fio novamente para tentar outra vez."
+          }
+        }
+      }
+    },
     "Your private journal" : {
       "localizations" : {
         "es" : {
@@ -2814,7 +3013,20 @@
       }
     },
     "Your week, read back · %@" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu semana, releída · %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua semana, relida · %@"
+          }
+        }
+      }
     },
     "·" : {
 

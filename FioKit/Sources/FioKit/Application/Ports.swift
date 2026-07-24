@@ -9,6 +9,13 @@ public protocol EntryRepository: Sendable {
     func allEntries() async throws -> [Entry]
     func entry(withID id: UUID) async throws -> Entry?
     func save(_ entry: Entry) async throws
+    /// Upserts the new entry, removes the replaced entry, and transfers every
+    /// durable journal reference in one transaction. A failed re-record keeps
+    /// both the old entry and its topic memberships intact.
+    func replacePreservingReferences(
+        _ replacedID: UUID,
+        with entry: Entry
+    ) async throws
     /// Writes model output only if nobody has changed the entry since the
     /// model started reading it.
     func saveReflection(

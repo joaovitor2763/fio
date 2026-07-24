@@ -42,6 +42,7 @@ struct JournalSearchScreen: View {
                                 }
                         }
                         .buttonStyle(CardButtonStyle())
+                        .accessibilityIdentifier("journal-search-result")
                     }
                 }
             }
@@ -89,7 +90,7 @@ struct JournalSearchScreen: View {
             HStack(spacing: 8) {
                 ForEach(store.acceptedTopics) { topic in
                     Button {
-                        withAnimation(Motion.quick) {
+                        withAnimation(reduceMotion ? nil : Motion.quick) {
                             selectedTopicID = selectedTopicID == topic.id
                                 ? nil
                                 : topic.id

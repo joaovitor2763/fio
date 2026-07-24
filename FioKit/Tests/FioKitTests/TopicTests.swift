@@ -19,6 +19,26 @@ final class TopicTests: XCTestCase {
         )
         XCTAssertNil(Topic.sanitizedName("✨ --"))
     }
+
+    func testReplacingEntryReferencePreservesMembershipWithoutDuplicates() {
+        let oldID = UUID()
+        let newID = UUID()
+        let otherID = UUID()
+        let topic = Topic(
+            name: "Project",
+            entryIDs: [oldID, otherID, newID]
+        )
+        let updateDate = date(2026, 7, 24)
+
+        let replaced = topic.replacingEntryReference(
+            from: oldID,
+            to: newID,
+            updatedAt: updateDate
+        )
+
+        XCTAssertEqual(replaced.entryIDs, [newID, otherID])
+        XCTAssertEqual(replaced.updatedAt, updateDate)
+    }
 }
 
 final class ReplaceEntryTopicsUseCaseTests: XCTestCase {
@@ -244,6 +264,29 @@ final class SaveDreamSuggestionsUseCaseTests: XCTestCase {
         XCTAssertFalse(topics.storage.contains { $0.status == .suggested })
     }
 
+    func testReturnsTheAuthoritativePersistedTopicSnapshot() async throws {
+        let entries = InMemoryEntryRepository()
+        let first = makeEntry()
+        let second = makeEntry(createdAt: date(2026, 7, 14))
+        try await entries.save(first)
+        try await entries.save(second)
+        let accepted = Topic(name: "Projeto Fio", entryIDs: [first.id])
+        let topics = InMemoryTopicRepository()
+        try await topics.save(accepted)
+        let useCase = SaveDreamSuggestionsUseCase(entries: entries, topics: topics)
+
+        let persistedTopics = try await useCase.execute(candidates: [
+            TopicCandidate(
+                name: "Limites no trabalho",
+                entryIDs: [first.id, second.id]
+            ),
+        ])
+
+        XCTAssertEqual(Set(persistedTopics.map(\.id)), Set(topics.storage.map(\.id)))
+        XCTAssertTrue(persistedTopics.contains { $0.id == accepted.id })
+        XCTAssertTrue(persistedTopics.contains { $0.status == .suggested })
+    }
+
     func testEquivalentDreamKeepsSuggestionIdentityForOpenRoutes() async throws {
         let entries = InMemoryEntryRepository()
         let first = makeEntry()
@@ -455,5 +498,52 @@ final class ReconcileTopicMembershipsUseCaseTests: XCTestCase {
             [existing.id]
         )
         XCTAssertNil(topics.storage.first { $0.id == suggestion.id })
+    }
+
+    func testNoOpReconciliationUsesProvidedSnapshotAndDoesNotWrite() async throws {
+        let entries = InMemoryEntryRepository()
+        let entry = makeEntry()
+        try await entries.save(entry)
+        let topics = InMemoryTopicRepository()
+        let topic = Topic(name: "Stable topic", entryIDs: [entry.id])
+        try await topics.save(topic)
+        let useCase = ReconcileTopicMembershipsUseCase(
+            entries: entries,
+            topics: topics
+        )
+
+        let result = try await useCase.execute(validEntryIDs: [entry.id])
+
+        XCTAssertEqual(result, [topic])
+        XCTAssertEqual(entries.allEntriesCallCount, 0)
+        XCTAssertEqual(topics.allTopicsCallCount, 1)
+        XCTAssertEqual(topics.replaceAllCallCount, 0)
+    }
+
+    func testReadOnlyRepairMakesAFailedMaintenanceSnapshotSafe() {
+        let existingID = UUID()
+        let missingID = UUID()
+        let accepted = Topic(
+            name: "Project",
+            entryIDs: [existingID, missingID]
+        )
+        let invalidSuggestion = Topic(
+            name: "Maybe",
+            status: .suggested,
+            entryIDs: [existingID, missingID]
+        )
+        let useCase = ReconcileTopicMembershipsUseCase(
+            entries: InMemoryEntryRepository(),
+            topics: InMemoryTopicRepository()
+        )
+
+        let repaired = useCase.repairedSnapshot(
+            [accepted, invalidSuggestion],
+            validEntryIDs: [existingID]
+        )
+
+        XCTAssertEqual(repaired.count, 1)
+        XCTAssertEqual(repaired.first?.id, accepted.id)
+        XCTAssertEqual(repaired.first?.entryIDs, [existingID])
     }
 }
