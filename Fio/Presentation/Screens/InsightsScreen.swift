@@ -32,25 +32,15 @@ struct InsightsScreen: View {
     }
 
     private var identityHeader: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "waveform")
-                .font(.body.weight(.semibold))
+        VStack(spacing: 2) {
+            Text("Your private journal")
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(Theme.primaryText)
-                .frame(width: 40, height: 40)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Theme.card)
-                )
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Your private journal")
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(Theme.primaryText)
-                Text("No account · only this iPhone")
-                    .font(.caption)
-                    .foregroundStyle(Theme.secondaryText)
-            }
+            Text("No account · only this iPhone")
+                .font(.caption)
+                .foregroundStyle(Theme.secondaryText)
         }
+        .multilineTextAlignment(.center)
         .frame(maxWidth: .infinity, alignment: .center)
     }
 
