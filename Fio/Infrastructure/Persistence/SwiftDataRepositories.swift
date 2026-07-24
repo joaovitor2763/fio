@@ -85,3 +85,80 @@ final class SwiftDataReviewRepository: ReviewRepository {
         try context.save()
     }
 }
+
+/// SwiftData-backed adapter for durable topics and Dream suggestions.
+@MainActor
+final class SwiftDataTopicRepository: TopicRepository {
+    private let context: ModelContext
+
+    init(context: ModelContext) {
+        self.context = context
+    }
+
+    func allTopics() async throws -> [Topic] {
+        let descriptor = FetchDescriptor<TopicRecord>(
+            sortBy: [SortDescriptor(\.updatedAt, order: .reverse)]
+        )
+        return try context.fetch(descriptor).map(\.asDomain)
+    }
+
+    func save(_ topic: Topic) async throws {
+        if let existing = try record(withID: topic.id) {
+            existing.apply(topic)
+        } else {
+            context.insert(TopicRecord(from: topic))
+        }
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    func deleteTopic(withID id: UUID) async throws {
+        guard let existing = try record(withID: id) else { return }
+        context.delete(existing)
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    func replaceAll(with topics: [Topic]) async throws {
+        let existingRecords = try context.fetch(FetchDescriptor<TopicRecord>())
+        let desiredIDs = Set(topics.map(\.id))
+        var recordsByID = Dictionary(
+            uniqueKeysWithValues: existingRecords.map { ($0.id, $0) }
+        )
+
+        for record in existingRecords where !desiredIDs.contains(record.id) {
+            context.delete(record)
+            recordsByID.removeValue(forKey: record.id)
+        }
+        for topic in topics {
+            if let existing = recordsByID[topic.id] {
+                existing.apply(topic)
+            } else {
+                context.insert(TopicRecord(from: topic))
+            }
+        }
+
+        do {
+            try context.save()
+        } catch {
+            context.rollback()
+            throw error
+        }
+    }
+
+    private func record(withID id: UUID) throws -> TopicRecord? {
+        var descriptor = FetchDescriptor<TopicRecord>(
+            predicate: #Predicate { $0.id == id }
+        )
+        descriptor.fetchLimit = 1
+        return try context.fetch(descriptor).first
+    }
+}

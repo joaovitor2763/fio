@@ -8,15 +8,22 @@ struct JournalSearchScreen: View {
     @Environment(JournalStore.self) private var store
     @Namespace private var navigationNamespace
     @State private var query = ""
+    @State private var selectedTopicID: UUID?
 
     private var results: [Entry] {
-        store.searchEntries(matching: query)
+        store.searchEntries(matching: query, topicID: selectedTopicID)
     }
 
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 10) {
-                if query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                if !store.acceptedTopics.isEmpty {
+                    topicFilters
+                        .padding(.bottom, 6)
+                }
+
+                if query.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                   selectedTopicID == nil {
                     searchHint
                 } else if results.isEmpty {
                     noResults
@@ -50,6 +57,11 @@ struct JournalSearchScreen: View {
             placement: .navigationBarDrawer(displayMode: .always),
             prompt: "Search transcript, reflection, and context"
         )
+        .onChange(of: store.acceptedTopics.map(\.id)) { _, topicIDs in
+            if let selectedTopicID, !topicIDs.contains(selectedTopicID) {
+                self.selectedTopicID = nil
+            }
+        }
         .navigationDestination(for: Route.self) { route in
             switch route {
             case .entry(let id):
@@ -59,6 +71,8 @@ struct JournalSearchScreen: View {
                         in: navigationNamespace,
                         reduceMotion: reduceMotion
                     )
+            case .topic(let id):
+                TopicScreen(topicID: id)
             case .review:
                 EmptyView()
             }
@@ -68,6 +82,32 @@ struct JournalSearchScreen: View {
                 Button("Close") { dismiss() }
             }
         }
+    }
+
+    private var topicFilters: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                ForEach(store.acceptedTopics) { topic in
+                    Button {
+                        withAnimation(Motion.quick) {
+                            selectedTopicID = selectedTopicID == topic.id
+                                ? nil
+                                : topic.id
+                        }
+                    } label: {
+                        TopicPill(
+                            name: topic.name,
+                            isSelected: selectedTopicID == topic.id
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(
+                        selectedTopicID == topic.id ? .isSelected : []
+                    )
+                }
+            }
+        }
+        .scrollIndicators(.hidden)
     }
 
     private var searchHint: some View {

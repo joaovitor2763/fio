@@ -39,10 +39,18 @@ struct RootView: View {
             await store.refresh()
             await store.composeDueReviews()
             await preloadAssets
+            DreamScheduler.schedule()
+            await store.runDreamIfNeeded()
         }
         .onChange(of: scenePhase) { _, phase in
-            guard phase == .active else { return }
-            Task { await store.composeDueReviews() }
+            if phase == .active {
+                Task {
+                    await store.composeDueReviews()
+                    await store.runDreamIfNeeded()
+                }
+            } else if phase == .background {
+                DreamScheduler.schedule()
+            }
         }
     }
 
@@ -113,6 +121,8 @@ struct RootView: View {
                     in: navigationNamespace,
                     reduceMotion: reduceMotion
                 )
+        case .topic(let id):
+            TopicScreen(topicID: id)
         case .review(let id, _):
             if let review = store.review(withID: id) {
                 ReviewScreen(review: review)

@@ -9,14 +9,18 @@ import FioKit
 final class JournalStore {
     private(set) var timeline: [TimelineDay] = []
     private(set) var reviews: [WeekReview] = []
+    private(set) var topics: [Topic] = []
     /// Entries the observer is currently reading, for the subtle indicator.
     private(set) var annotatingEntryIDs: Set<UUID> = []
+    private(set) var isDreaming = false
     private(set) var isLoaded = false
 
     let calendar = JournalCalendar()
 
     private let entryRepository: EntryRepository
     private let reviewRepository: ReviewRepository
+    private let topicRepository: TopicRepository
+    private let topicDiscoveryService: TopicDiscoveryService
     private let recordEntry: RecordEntryUseCase
     private let annotateEntry: AnnotateEntryUseCase
     private let amendContext: AmendEntryContextUseCase
@@ -24,17 +28,29 @@ final class JournalStore {
     private let replaceReflection: ReplaceEntryReflectionUseCase
     private let deleteEntry: DeleteEntryUseCase
     private let composeReviews: ComposeDueReviewsUseCase
+    private let migrateLegacyTags: MigrateLegacyTagsUseCase
+    private let replaceEntryTopics: ReplaceEntryTopicsUseCase
+    private let saveDreamSuggestions: SaveDreamSuggestionsUseCase
+    private let resolveTopicSuggestion: ResolveTopicSuggestionUseCase
+    private let removeEntryFromTopics: RemoveEntryFromTopicsUseCase
+    private let reconcileTopicMemberships: ReconcileTopicMembershipsUseCase
+    private let topicMutationLock = AsyncMutationLock()
     private var searchDocuments: [SearchDocument] = []
     private var pendingReflectionStyles: [UUID: ReflectionStyle] = [:]
+    private var didMigrateLegacyTags = false
 
     init(
         entryRepository: EntryRepository,
         reviewRepository: ReviewRepository,
+        topicRepository: TopicRepository,
         reflectionService: ReflectionService,
-        weekSummaryService: WeekSummaryService
+        weekSummaryService: WeekSummaryService,
+        topicDiscoveryService: TopicDiscoveryService
     ) {
         self.entryRepository = entryRepository
         self.reviewRepository = reviewRepository
+        self.topicRepository = topicRepository
+        self.topicDiscoveryService = topicDiscoveryService
         recordEntry = RecordEntryUseCase(entries: entryRepository)
         annotateEntry = AnnotateEntryUseCase(entries: entryRepository, reflector: reflectionService)
         amendContext = AmendEntryContextUseCase(entries: entryRepository)
@@ -47,16 +63,68 @@ final class JournalStore {
             summarizer: weekSummaryService,
             policy: ReviewPolicy(calendar: calendar)
         )
+        migrateLegacyTags = MigrateLegacyTagsUseCase(
+            entries: entryRepository,
+            topics: topicRepository
+        )
+        replaceEntryTopics = ReplaceEntryTopicsUseCase(
+            entries: entryRepository,
+            topics: topicRepository
+        )
+        saveDreamSuggestions = SaveDreamSuggestionsUseCase(
+            entries: entryRepository,
+            topics: topicRepository
+        )
+        resolveTopicSuggestion = ResolveTopicSuggestionUseCase(topics: topicRepository)
+        removeEntryFromTopics = RemoveEntryFromTopicsUseCase(topics: topicRepository)
+        reconcileTopicMemberships = ReconcileTopicMembershipsUseCase(
+            entries: entryRepository,
+            topics: topicRepository
+        )
     }
 
     // MARK: - Reading
 
     func refresh() async {
         let entries = (try? await entryRepository.allEntries()) ?? []
+        await withTopicMutation {
+            if !didMigrateLegacyTags {
+                if LegacyTopicMigrationState.isComplete {
+                    didMigrateLegacyTags = true
+                } else {
+                    do {
+                        try await migrateLegacyTags.execute()
+                        LegacyTopicMigrationState.markComplete()
+                        didMigrateLegacyTags = true
+                    } catch {
+                        // A transient store failure retries on the next refresh.
+                    }
+                }
+            }
+            try? await reconcileTopicMemberships.execute()
+        }
+        let allTopics = (try? await topicRepository.allTopics()) ?? []
+        topics = allTopics.sorted {
+            if $0.status != $1.status {
+                return $0.status == .suggested
+            }
+            return $0.updatedAt > $1.updatedAt
+        }
         timeline = TimelineBuilder.days(from: entries, calendar: calendar)
+        let topicNamesByEntry = Dictionary(grouping: allTopics.filter {
+            $0.status == .accepted
+        }.flatMap { topic in
+            topic.entryIDs.map { ($0, topic.name) }
+        }, by: \.0)
+        .mapValues { pairs in pairs.map(\.1) }
         searchDocuments = entries
             .sorted { $0.createdAt > $1.createdAt }
-            .map(SearchDocument.init)
+            .map {
+                SearchDocument(
+                    entry: $0,
+                    topicNames: topicNamesByEntry[$0.id] ?? []
+                )
+            }
         let allReviews = (try? await reviewRepository.allReviews()) ?? []
         reviews = allReviews.sorted { $0.weekStart > $1.weekStart }
         isLoaded = true
@@ -75,17 +143,58 @@ final class JournalStore {
 
     var latestReview: WeekReview? { reviews.first }
 
+    var acceptedTopics: [Topic] {
+        topics
+            .filter { $0.status == .accepted }
+            .sorted {
+                $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+            }
+    }
+
+    var pendingTopicSuggestion: Topic? {
+        topics
+            .filter { $0.status == .suggested && $0.entryIDs.count >= 2 }
+            .max { $0.updatedAt < $1.updatedAt }
+    }
+
+    func topic(withID id: UUID) -> Topic? {
+        topics.first { $0.id == id }
+    }
+
+    func topics(forEntryID id: UUID) -> [Topic] {
+        acceptedTopics.filter { $0.contains(entryID: id) }
+    }
+
+    func topicSuggestions(forEntryID id: UUID) -> [Topic] {
+        topics.filter { $0.status == .suggested && $0.contains(entryID: id) }
+    }
+
+    func entries(forTopicID id: UUID) -> [Entry] {
+        guard let topic = topic(withID: id) else { return [] }
+        return topic.entryIDs
+            .compactMap(entry(withID:))
+            .sorted { $0.createdAt > $1.createdAt }
+    }
+
     var daysWithEntries: Set<Date> { Set(timeline.map(\.day)) }
 
     /// Searches a pre-normalized, in-memory index. All matching stays on-device.
-    func searchEntries(matching query: String) -> [Entry] {
+    func searchEntries(matching query: String, topicID: UUID? = nil) -> [Entry] {
         let terms = normalizedSearchText(query)
             .split(whereSeparator: \.isWhitespace)
             .map(String.init)
-        guard !terms.isEmpty else { return [] }
+        let topicEntryIDs: Set<UUID>?
+        if let topicID {
+            guard let topic = topic(withID: topicID) else { return [] }
+            topicEntryIDs = Set(topic.entryIDs)
+        } else {
+            topicEntryIDs = nil
+        }
+        guard !terms.isEmpty || topicEntryIDs != nil else { return [] }
 
         return searchDocuments.compactMap { document in
-            terms.allSatisfy(document.content.contains) ? document.entry : nil
+            guard topicEntryIDs?.contains(document.entry.id) ?? true else { return nil }
+            return terms.allSatisfy(document.content.contains) ? document.entry : nil
         }
     }
 
@@ -132,6 +241,7 @@ final class JournalStore {
         if replacedAudioFileName != audioFileName {
             AudioFileStore.deleteFile(named: replacedAudioFileName)
         }
+        DreamScheduleState.markNeedsAnalysis()
         await refresh()
 
         Task {
@@ -143,15 +253,23 @@ final class JournalStore {
         let audioFileName = entry(withID: entryID)?.audioFileName
         do {
             try await deleteEntry.execute(entryID: entryID)
-            AudioFileStore.deleteFile(named: audioFileName)
-            await refresh()
         } catch {
             return
         }
+
+        // Entry deletion is already committed. Topic cleanup is best-effort,
+        // but audio and the in-memory timeline must always follow the entry.
+        try? await withTopicMutation {
+            try await removeEntryFromTopics.execute(entryID: entryID)
+        }
+        AudioFileStore.deleteFile(named: audioFileName)
+        DreamScheduleState.markNeedsAnalysis()
+        await refresh()
     }
 
     func saveContext(_ text: String, forEntryID id: UUID) async {
         _ = try? await amendContext.execute(entryID: id, context: text)
+        DreamScheduleState.markNeedsAnalysis()
         await refresh()
     }
 
@@ -162,6 +280,7 @@ final class JournalStore {
         ) != nil else {
             throw JournalStoreError.transcriptionUnavailable
         }
+        DreamScheduleState.markNeedsAnalysis()
         await refresh()
         Task {
             await regenerateReflection(entryID: id)
@@ -180,7 +299,48 @@ final class JournalStore {
         ) != nil else {
             throw JournalStoreError.entryUnavailable
         }
+        DreamScheduleState.markNeedsAnalysis()
         await refresh()
+    }
+
+    func saveTopics(_ names: [String], forEntryID id: UUID) async throws {
+        DreamScheduleState.markNeedsAnalysis()
+        guard try await withTopicMutation({
+            try await replaceEntryTopics.execute(entryID: id, names: names)
+        }) != nil else {
+            throw JournalStoreError.entryUnavailable
+        }
+        await refresh()
+    }
+
+    @discardableResult
+    func acceptTopicSuggestion(
+        _ topicID: UUID,
+        renamedTo name: String? = nil
+    ) async -> Topic? {
+        DreamScheduleState.markNeedsAnalysis()
+        let accepted = try? await withTopicMutation {
+            try await resolveTopicSuggestion.accept(
+                topicID: topicID,
+                renamedTo: name
+            )
+        }
+        await refresh()
+        return accepted
+    }
+
+    @discardableResult
+    func dismissTopicSuggestion(_ topicID: UUID) async -> Bool {
+        DreamScheduleState.markNeedsAnalysis()
+        do {
+            try await withTopicMutation {
+                try await resolveTopicSuggestion.dismiss(topicID: topicID)
+            }
+            await refresh()
+            return true
+        } catch {
+            return false
+        }
     }
 
     func regenerateReflection(
@@ -200,6 +360,7 @@ final class JournalStore {
                 style: currentStyle,
                 guidance: ObserverPreferences.guidance
             )
+            DreamScheduleState.markNeedsAnalysis()
             await refresh()
             nextStyle = pendingReflectionStyles.removeValue(forKey: entryID)
         }
@@ -224,6 +385,7 @@ final class JournalStore {
         ) else {
             throw JournalStoreError.transcriptionUnavailable
         }
+        DreamScheduleState.markNeedsAnalysis()
         await refresh()
 
         Task {
@@ -237,13 +399,121 @@ final class JournalStore {
         await refresh()
     }
 
+    /// Opportunistically consolidates recent entries using only the on-device
+    /// model. Work is idempotent and safe to resume after background expiry.
+    func runDreamIfNeeded() async {
+        guard !isDreaming else { return }
+        isDreaming = true
+        var retryAfterCorpusChange = false
+        defer {
+            isDreaming = false
+            if retryAfterCorpusChange {
+                Task { await self.runDreamIfNeeded() }
+            }
+        }
+
+        let entries = (try? await entryRepository.allEntries()) ?? []
+        let substantialEntries = entries.filter { $0.transcript.isSubstantial }
+        let latestEntryDate = substantialEntries.map(\.createdAt).max() ?? .distantPast
+        guard DreamScheduleState.needsAnalysis(latestEntryDate: latestEntryDate) else {
+            return
+        }
+        let corpusRevision = DreamScheduleState.currentRevision
+
+        if substantialEntries.count < 2 {
+            do {
+                _ = try await withTopicMutation {
+                    try await saveDreamSuggestions.execute(candidates: [])
+                }
+                guard DreamScheduleState.markAnalyzed(
+                    through: latestEntryDate,
+                    ifRevisionIs: corpusRevision
+                ) else {
+                    retryAfterCorpusChange = true
+                    return
+                }
+                await refresh()
+            } catch {
+                // Leave the revision stale so a later pass retries cleanup.
+            }
+            return
+        }
+
+        let allTopics = (try? await topicRepository.allTopics()) ?? []
+        guard let candidates = await topicDiscoveryService.discoverTopics(
+            in: substantialEntries,
+            existingTopics: allTopics
+        ) else {
+            return
+        }
+        guard DreamScheduleState.currentRevision == corpusRevision else {
+            retryAfterCorpusChange = true
+            return
+        }
+
+        do {
+            _ = try await withTopicMutation {
+                try await saveDreamSuggestions.execute(candidates: candidates)
+            }
+            guard DreamScheduleState.markAnalyzed(
+                through: latestEntryDate,
+                ifRevisionIs: corpusRevision
+            ) else {
+                retryAfterCorpusChange = true
+                return
+            }
+            await refresh()
+        } catch {
+            // Leave the Dream stale so a later foreground or background pass retries.
+        }
+    }
+
+    private func withTopicMutation<T>(
+        _ operation: @MainActor () async throws -> T
+    ) async rethrows -> T {
+        await topicMutationLock.acquire()
+        do {
+            let result = try await operation()
+            await topicMutationLock.release()
+            return result
+        } catch {
+            await topicMutationLock.release()
+            throw error
+        }
+    }
+
+}
+
+/// Actor reentrancy alone does not serialize a transaction across suspension
+/// points. This FIFO lock protects each complete topic read/modify/commit.
+private actor AsyncMutationLock {
+    private var isLocked = false
+    private var waiters: [CheckedContinuation<Void, Never>] = []
+
+    func acquire() async {
+        if !isLocked {
+            isLocked = true
+            return
+        }
+        await withCheckedContinuation { continuation in
+            waiters.append(continuation)
+        }
+    }
+
+    func release() {
+        if waiters.isEmpty {
+            isLocked = false
+        } else {
+            waiters.removeFirst().resume()
+        }
+    }
 }
 
 private struct SearchDocument {
     let entry: Entry
     let content: String
 
-    init(entry: Entry) {
+    init(entry: Entry, topicNames: [String]) {
         self.entry = entry
         content = normalizedSearchText(
             [
@@ -251,6 +521,7 @@ private struct SearchDocument {
                 entry.reflection.headline,
                 entry.reflection.observations.joined(separator: " "),
                 entry.reflection.tags.joined(separator: " "),
+                topicNames.joined(separator: " "),
                 entry.authorContext,
             ]
             .joined(separator: " ")

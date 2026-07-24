@@ -95,3 +95,40 @@ final class ReviewRecord {
         )
     }
 }
+
+@Model
+final class TopicRecord {
+    @Attribute(.unique) var id: UUID
+    var name: String
+    var statusRawValue: String
+    var entryIDs: [UUID]
+    var createdAt: Date
+    var updatedAt: Date
+
+    init(from topic: Topic) {
+        id = topic.id
+        name = topic.name
+        statusRawValue = topic.status.rawValue
+        entryIDs = topic.entryIDs
+        createdAt = topic.createdAt
+        updatedAt = topic.updatedAt
+    }
+
+    func apply(_ topic: Topic) {
+        name = topic.name
+        statusRawValue = topic.status.rawValue
+        entryIDs = topic.entryIDs
+        updatedAt = topic.updatedAt
+    }
+
+    var asDomain: Topic {
+        Topic(
+            id: id,
+            name: name,
+            status: Topic.Status(rawValue: statusRawValue) ?? .accepted,
+            entryIDs: entryIDs,
+            createdAt: createdAt,
+            updatedAt: updatedAt
+        )
+    }
+}

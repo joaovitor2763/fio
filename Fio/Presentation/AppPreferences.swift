@@ -63,6 +63,65 @@ enum ObserverPreferences {
     }
 }
 
+enum DreamScheduleState {
+    private static let analyzedThroughKey = "dreamAnalyzedThrough"
+    private static let corpusRevisionKey = "dreamCorpusRevision"
+    private static let analyzedRevisionKey = "dreamAnalyzedRevision"
+
+    static var currentRevision: Int {
+        UserDefaults.standard.integer(forKey: corpusRevisionKey)
+    }
+
+    static func needsAnalysis(latestEntryDate: Date) -> Bool {
+        guard UserDefaults.standard.object(forKey: analyzedThroughKey) != nil,
+              UserDefaults.standard.object(forKey: analyzedRevisionKey) != nil else {
+            return true
+        }
+        return currentRevision
+            != UserDefaults.standard.integer(forKey: analyzedRevisionKey)
+            || latestEntryDate.timeIntervalSince1970
+                > UserDefaults.standard.double(forKey: analyzedThroughKey)
+    }
+
+    @discardableResult
+    static func markAnalyzed(
+        through date: Date,
+        ifRevisionIs expectedRevision: Int
+    ) -> Bool {
+        guard currentRevision == expectedRevision else { return false }
+        UserDefaults.standard.set(
+            date.timeIntervalSince1970,
+            forKey: analyzedThroughKey
+        )
+        UserDefaults.standard.set(
+            expectedRevision,
+            forKey: analyzedRevisionKey
+        )
+        return true
+    }
+
+    static func markNeedsAnalysis() {
+        UserDefaults.standard.set(
+            currentRevision &+ 1,
+            forKey: corpusRevisionKey
+        )
+    }
+}
+
+/// Prevents the one-time conversion from legacy reflection tags from
+/// resurrecting topic memberships the author later removes.
+enum LegacyTopicMigrationState {
+    private static let completionKey = "legacyTagsMigratedToTopics.v1"
+
+    static var isComplete: Bool {
+        UserDefaults.standard.bool(forKey: completionKey)
+    }
+
+    static func markComplete() {
+        UserDefaults.standard.set(true, forKey: completionKey)
+    }
+}
+
 func appLocalized(_ key: String.LocalizationValue, locale: Locale) -> String {
     String(localized: key, locale: locale)
 }

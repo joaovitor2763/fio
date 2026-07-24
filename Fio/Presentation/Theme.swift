@@ -90,6 +90,7 @@ extension View {
 /// Where a tap on the timeline can lead.
 enum Route: Hashable {
     case entry(UUID)
+    case topic(UUID)
     case review(UUID, source: ReviewRouteSource)
 }
 

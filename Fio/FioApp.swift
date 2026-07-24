@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import BackgroundTasks
 import FioKit
 
 /// Composition root: wires the SwiftData and Apple Intelligence adapters
@@ -13,17 +14,39 @@ struct FioApp: App {
 
     init() {
         do {
-            container = try ModelContainer(for: EntryRecord.self, ReviewRecord.self)
+            container = try ModelContainer(
+                for: EntryRecord.self,
+                ReviewRecord.self,
+                TopicRecord.self
+            )
         } catch {
             fatalError("Could not open the journal store: \(error)")
         }
         let context = container.mainContext
-        _store = State(initialValue: JournalStore(
+        let topicRepository = SwiftDataTopicRepository(context: context)
+        let journalStore = JournalStore(
             entryRepository: SwiftDataEntryRepository(context: context),
             reviewRepository: SwiftDataReviewRepository(context: context),
+            topicRepository: topicRepository,
             reflectionService: AppleIntelligenceReflectionService(),
-            weekSummaryService: AppleIntelligenceWeekSummaryService()
-        ))
+            weekSummaryService: AppleIntelligenceWeekSummaryService(),
+            topicDiscoveryService: AppleIntelligenceTopicDiscoveryService()
+        )
+        _store = State(initialValue: journalStore)
+
+        BGTaskScheduler.shared.register(
+            forTaskWithIdentifier: DreamScheduler.identifier,
+            using: nil
+        ) { task in
+            let work = Task { @MainActor in
+                await journalStore.runDreamIfNeeded()
+                DreamScheduler.schedule()
+                task.setTaskCompleted(success: !Task.isCancelled)
+            }
+            task.expirationHandler = {
+                work.cancel()
+            }
+        }
     }
 
     var body: some Scene {

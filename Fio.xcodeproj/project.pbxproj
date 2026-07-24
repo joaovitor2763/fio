@@ -262,7 +262,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J3L7J4J4GT;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Fio-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Fio;
 				INFOPLIST_KEY_CFBundleName = Fio;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fio listens only while you record. Your voice is transcribed on this device and never leaves it.";
@@ -295,7 +296,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = J3L7J4J4GT;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Fio-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Fio;
 				INFOPLIST_KEY_CFBundleName = Fio;
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Fio listens only while you record. Your voice is transcribed on this device and never leaves it.";

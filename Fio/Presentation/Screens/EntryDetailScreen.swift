@@ -27,6 +27,8 @@ struct EntryDetailScreen: View {
     @State private var draftTranscript = ""
     @State private var draftHeadline = ""
     @State private var draftObservations: [ReflectionObservationDraft] = []
+    @State private var draftTopicNames: [String] = []
+    @State private var draftTopicInput = ""
     @State private var audioPlayer = AudioPlaybackController()
 
     private var entry: Entry? { store.entry(withID: entryID) }
@@ -56,9 +58,11 @@ struct EntryDetailScreen: View {
     }
 
     private func content(for entry: Entry) -> some View {
-        ScrollView {
+        let hasTopicContent = !store.topics(forEntryID: entry.id).isEmpty
+            || !store.topicSuggestions(forEntryID: entry.id).isEmpty
+        return ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                if !entry.displayObservations.isEmpty {
+                if !entry.displayObservations.isEmpty || hasTopicContent {
                     observationList(for: entry)
                 } else if store.annotatingEntryIDs.contains(entry.id) {
                     HStack(spacing: 8) {
@@ -67,15 +71,8 @@ struct EntryDetailScreen: View {
                             .font(.footnote)
                             .foregroundStyle(Theme.tertiaryText)
                     }
-                } else if entry.transcript.isSubstantial {
-                    Button {
-                        regenerateReflection(for: entry, style: .standard)
-                    } label: {
-                        Label("Create reflection", systemImage: "sparkles")
-                            .font(.footnote)
-                            .foregroundStyle(Theme.secondaryText)
-                    }
-                    .buttonStyle(.plain)
+                } else {
+                    emptyReflectionCard(for: entry)
                 }
 
                 if !entry.displayObservations.isEmpty {
@@ -169,7 +166,9 @@ struct EntryDetailScreen: View {
     }
 
     private func observationList(for entry: Entry) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+        let acceptedTopics = store.topics(forEntryID: entry.id)
+        let suggestions = store.topicSuggestions(forEntryID: entry.id)
+        return VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("Reflection")
                     .font(.caption.weight(.medium))
@@ -192,6 +191,77 @@ struct EntryDetailScreen: View {
                         .foregroundStyle(Theme.primaryText)
                 }
             }
+
+            if entry.displayObservations.isEmpty {
+                Button {
+                    regenerateReflection(for: entry, style: .standard)
+                } label: {
+                    Label("Create reflection", systemImage: "sparkles")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.secondaryText)
+                }
+                .buttonStyle(.plain)
+            }
+
+            if !acceptedTopics.isEmpty || !suggestions.isEmpty {
+                Divider()
+                    .overlay(Theme.cardStroke)
+                    .padding(.top, 2)
+
+                Text(suggestions.isEmpty ? "Topics" : "Topics and suggestions")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Theme.tertiaryText)
+
+                WrapLayout {
+                    ForEach(acceptedTopics) { topic in
+                        NavigationLink(value: Route.topic(topic.id)) {
+                            TopicPill(name: topic.name)
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    ForEach(suggestions) { topic in
+                        NavigationLink(value: Route.topic(topic.id)) {
+                            TopicPill(name: topic.name, isSuggested: true)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityHint("Review why Fio connected these entries")
+                    }
+                }
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 22).fill(Theme.card))
+    }
+
+    private func emptyReflectionCard(for entry: Entry) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Reflection")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Theme.secondaryText)
+                Spacer()
+                Button {
+                    openReflectionEditor(for: entry)
+                } label: {
+                    Label("Add topic", systemImage: "plus")
+                        .font(.footnote.weight(.medium))
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(Theme.primaryText)
+            }
+
+            if entry.transcript.isSubstantial {
+                Button {
+                    regenerateReflection(for: entry, style: .standard)
+                } label: {
+                    Label("Create reflection", systemImage: "sparkles")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.secondaryText)
+                }
+                .buttonStyle(.plain)
+            }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -201,11 +271,7 @@ struct EntryDetailScreen: View {
     private func reflectionMenu(for entry: Entry) -> some View {
         Menu {
             Button {
-                draftHeadline = entry.reflection.headline
-                draftObservations = entry.reflection.observations.map {
-                    ReflectionObservationDraft(text: $0)
-                }
-                showReflectionEditor = true
+                openReflectionEditor(for: entry)
             } label: {
                 Label("Edit reflection", systemImage: "pencil")
             }
@@ -237,6 +303,16 @@ struct EntryDetailScreen: View {
                 .contentShape(Rectangle())
         }
         .accessibilityLabel("Reflection options")
+    }
+
+    private func openReflectionEditor(for entry: Entry) {
+        draftHeadline = entry.reflection.headline
+        draftObservations = entry.reflection.observations.map {
+            ReflectionObservationDraft(text: $0)
+        }
+        draftTopicNames = store.topics(forEntryID: entry.id).map(\.name)
+        draftTopicInput = ""
+        showReflectionEditor = true
     }
 
     private func transcriptSection(for entry: Entry) -> some View {
@@ -645,6 +721,9 @@ struct EntryDetailScreen: View {
                     Text("The first bullet is the main observation. You can add up to three more.")
                         .font(.caption)
                         .foregroundStyle(Theme.tertiaryText)
+
+                    topicEditor
+                        .padding(.top, 12)
                 }
                 .padding(20)
             }
@@ -675,6 +754,10 @@ struct EntryDetailScreen: View {
                                     observations: Array(observations),
                                     forEntryID: entry.id
                                 )
+                                try await store.saveTopics(
+                                    draftTopicNames,
+                                    forEntryID: entry.id
+                                )
                                 showReflectionEditor = false
                             } catch {
                                 reflectionEditorError = error.localizedDescription
@@ -696,6 +779,100 @@ struct EntryDetailScreen: View {
         } message: {
             Text(reflectionEditorError ?? "")
         }
+    }
+
+    private var topicEditor: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Topics")
+                .font(.footnote.weight(.medium))
+                .foregroundStyle(Theme.secondaryText)
+
+            Text("Topics stay attached even when the reflection changes.")
+                .font(.caption)
+                .foregroundStyle(Theme.tertiaryText)
+
+            if !draftTopicNames.isEmpty {
+                WrapLayout {
+                    ForEach(draftTopicNames, id: \.self) { name in
+                        Button {
+                            draftTopicNames.removeAll {
+                                Topic.normalizedName($0) == Topic.normalizedName(name)
+                            }
+                        } label: {
+                            HStack(spacing: 5) {
+                                TopicPill(name: name)
+                                Image(systemName: "xmark.circle.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(Theme.tertiaryText)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Remove topic \(name)")
+                    }
+                }
+            }
+
+            HStack(spacing: 10) {
+                TextField("Add a topic", text: $draftTopicInput)
+                    .textFieldStyle(.plain)
+                    .submitLabel(.done)
+                    .onSubmit(addDraftTopic)
+                Button(action: addDraftTopic) {
+                    Image(systemName: "plus.circle.fill")
+                        .foregroundStyle(Theme.primaryText)
+                }
+                .buttonStyle(.plain)
+                .disabled(Topic.sanitizedName(draftTopicInput) == nil)
+                .accessibilityLabel("Add topic")
+            }
+            .padding(12)
+            .background(RoundedRectangle(cornerRadius: 14).fill(Theme.card))
+
+            let matches = matchingExistingTopics
+            if !matches.isEmpty {
+                Text("Existing topics")
+                    .font(.caption)
+                    .foregroundStyle(Theme.tertiaryText)
+                WrapLayout {
+                    ForEach(matches) { topic in
+                        Button {
+                            addDraftTopic(topic.name)
+                        } label: {
+                            TopicPill(name: topic.name)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
+    }
+
+    private var matchingExistingTopics: [Topic] {
+        let selected = Set(draftTopicNames.map(Topic.normalizedName))
+        let query = Topic.normalizedName(draftTopicInput)
+        return store.acceptedTopics.filter { topic in
+            !selected.contains(topic.normalizedName)
+                && (query.isEmpty || topic.normalizedName.contains(query))
+        }
+        .prefix(8)
+        .map { $0 }
+    }
+
+    private func addDraftTopic() {
+        addDraftTopic(draftTopicInput)
+    }
+
+    private func addDraftTopic(_ rawName: String) {
+        guard let name = Topic.sanitizedName(rawName) else { return }
+        let key = Topic.normalizedName(name)
+        guard !draftTopicNames.contains(where: {
+            Topic.normalizedName($0) == key
+        }) else {
+            draftTopicInput = ""
+            return
+        }
+        draftTopicNames.append(name)
+        draftTopicInput = ""
     }
 
     private func reflectionBulletField(

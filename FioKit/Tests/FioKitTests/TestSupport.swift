@@ -87,6 +87,28 @@ final class InMemoryReviewRepository: ReviewRepository, @unchecked Sendable {
     }
 }
 
+final class InMemoryTopicRepository: TopicRepository, @unchecked Sendable {
+    private(set) var storage: [Topic] = []
+
+    func allTopics() async throws -> [Topic] { storage }
+
+    func save(_ topic: Topic) async throws {
+        if let index = storage.firstIndex(where: { $0.id == topic.id }) {
+            storage[index] = topic
+        } else {
+            storage.append(topic)
+        }
+    }
+
+    func deleteTopic(withID id: UUID) async throws {
+        storage.removeAll { $0.id == id }
+    }
+
+    func replaceAll(with topics: [Topic]) async throws {
+        storage = topics
+    }
+}
+
 final class StubReflectionService: ReflectionService, @unchecked Sendable {
     var result: Reflection?
     private(set) var callCount = 0

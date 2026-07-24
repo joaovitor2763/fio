@@ -30,6 +30,14 @@ struct TimelineScreen: View {
                     .buttonStyle(CardButtonStyle())
                 }
 
+                if store.calendar.isSameDay(selectedDay, .now),
+                   let suggestion = store.pendingTopicSuggestion {
+                    NavigationLink(value: Route.topic(suggestion.id)) {
+                        DreamTeaserCard(topic: suggestion)
+                    }
+                    .buttonStyle(CardButtonStyle())
+                }
+
                 if store.isLoaded {
                     selectedDayContent
                         .id(selectedDay)

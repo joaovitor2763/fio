@@ -1,6 +1,110 @@
 import SwiftUI
 import FioKit
 
+// MARK: - Topics
+
+/// A compact wrapping layout for topic pills at larger Dynamic Type sizes too.
+struct WrapLayout: Layout {
+    var spacing: CGFloat = 7
+
+    func sizeThatFits(
+        proposal: ProposedViewSize,
+        subviews: Subviews,
+        cache: inout ()
+    ) -> CGSize {
+        let rows = arrange(subviews: subviews, width: proposal.width ?? .infinity)
+        let height = rows.last.map { $0.y + $0.height } ?? 0
+        return CGSize(
+            width: proposal.width ?? rows.map(\.width).max() ?? 0,
+            height: height
+        )
+    }
+
+    func placeSubviews(
+        in bounds: CGRect,
+        proposal: ProposedViewSize,
+        subviews: Subviews,
+        cache: inout ()
+    ) {
+        for row in arrange(subviews: subviews, width: bounds.width) {
+            var x = bounds.minX
+            for index in row.indices {
+                let size = subviews[index].sizeThatFits(.unspecified)
+                subviews[index].place(
+                    at: CGPoint(x: x, y: bounds.minY + row.y),
+                    proposal: ProposedViewSize(size)
+                )
+                x += size.width + spacing
+            }
+        }
+    }
+
+    private struct Row {
+        var indices: [Int] = []
+        var y: CGFloat = 0
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+    }
+
+    private func arrange(subviews: Subviews, width: CGFloat) -> [Row] {
+        var rows: [Row] = []
+        var row = Row()
+        var y: CGFloat = 0
+
+        for (index, subview) in subviews.enumerated() {
+            let size = subview.sizeThatFits(.unspecified)
+            if !row.indices.isEmpty, row.width + spacing + size.width > width {
+                rows.append(row)
+                y += row.height + spacing
+                row = Row(y: y)
+            }
+            row.indices.append(index)
+            row.width += size.width + (row.indices.count > 1 ? spacing : 0)
+            row.height = max(row.height, size.height)
+        }
+        if !row.indices.isEmpty { rows.append(row) }
+        return rows
+    }
+}
+
+struct TopicPill: View {
+    let name: String
+    var isSuggested = false
+    var isSelected = false
+
+    var body: some View {
+        HStack(spacing: 5) {
+            if isSuggested {
+                Image(systemName: "sparkles")
+                    .font(.caption2)
+            }
+            Text(name)
+                .lineLimit(1)
+        }
+        .font(.caption.weight(.medium))
+        .foregroundStyle(Theme.secondaryText)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(
+            Capsule()
+                .fill(
+                    isSuggested || isSelected
+                        ? Theme.accent.opacity(isSelected ? 0.18 : 0.10)
+                        : Theme.background
+                )
+        )
+        .overlay(
+            Capsule()
+                .stroke(
+                    isSuggested || isSelected
+                        ? Theme.accent.opacity(isSelected ? 0.70 : 0.45)
+                        : Theme.cardStroke,
+                    lineWidth: 1
+                )
+        )
+    }
+}
+
 // MARK: - Waveform
 
 /// Tight vertical bars mirrored around the midline, newest on the right.
@@ -183,6 +287,39 @@ struct ReviewTeaserCard: View {
         }
         .padding(16)
         .background(RoundedRectangle(cornerRadius: 22).stroke(Theme.cardStroke, lineWidth: 1))
+    }
+}
+
+/// Appears only while a newly discovered thread is waiting for review.
+struct DreamTeaserCard: View {
+    let topic: Topic
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "sparkles")
+                .font(.callout)
+                .foregroundStyle(Theme.accent)
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Fio found something recurring")
+                    .font(.caption)
+                    .foregroundStyle(Theme.tertiaryText)
+                Text(topic.name)
+                    .font(.body.weight(.medium))
+                    .foregroundStyle(Theme.primaryText)
+                Text("\(topic.entryIDs.count) connected entries")
+                    .font(.caption2)
+                    .foregroundStyle(Theme.secondaryText)
+            }
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundStyle(Theme.tertiaryText)
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 22)
+                .stroke(Theme.accent.opacity(0.38), lineWidth: 1)
+        )
     }
 }
 

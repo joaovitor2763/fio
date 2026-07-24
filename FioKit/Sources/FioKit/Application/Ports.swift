@@ -25,6 +25,15 @@ public protocol ReviewRepository: Sendable {
     func save(_ review: WeekReview) async throws
 }
 
+/// Persistence for stable, journal-wide topics and pending Dream suggestions.
+public protocol TopicRepository: Sendable {
+    func allTopics() async throws -> [Topic]
+    func save(_ topic: Topic) async throws
+    func deleteTopic(withID id: UUID) async throws
+    /// Atomically replaces the journal-wide topic collection.
+    func replaceAll(with topics: [Topic]) async throws
+}
+
 /// The observer. Returns nil when it is unavailable or has nothing to say;
 /// the raw output is sanitized by the use case, not trusted as-is.
 public protocol ReflectionService: Sendable {
@@ -56,4 +65,14 @@ public struct WeekSummary: Equatable, Sendable {
 /// The Sunday read-back writer. Returns nil when unavailable or silent.
 public protocol WeekSummaryService: Sendable {
     func summarize(weekStart: Date, entries: [Entry]) async -> WeekSummary?
+}
+
+/// Finds contextual threads across entries using an entirely local model.
+/// `nil` means the model was unavailable; an empty array is a successful
+/// Dream that found no strong recurrence.
+public protocol TopicDiscoveryService: Sendable {
+    func discoverTopics(
+        in entries: [Entry],
+        existingTopics: [Topic]
+    ) async -> [TopicCandidate]?
 }
