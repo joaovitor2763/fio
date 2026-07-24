@@ -31,6 +31,11 @@ architecture, privacy model, interface, and feature set.
   an entry is stored. Model output is sanitized, and weak output stays silent.
 - **Weekly read-back** — after activity on three or more occasions, Fio can
   summarize the completed week on Sunday.
+- **Recurring topics and Dream** — an optional, on-device consolidation pass
+  can notice connections across entries. Suggestions remain pending until they
+  are accepted, renamed, or dismissed.
+- **Private search** — search transcripts, reflections, context, and accepted
+  topics through an in-memory index without sending a query off-device.
 - **Private insights** — activity history, recording time, word count, active
   days, common hours, and current/longest streaks are calculated on-device.
 - **Export** — share the transcript, original audio, or both using the system
@@ -64,18 +69,22 @@ FioKit/                         Pure domain and application core
     Domain/                       Entries, transcripts, calendar, reviews,
                                   reflection rules, usage statistics
     Application/                  Use cases and platform-independent ports
-  Tests/FioKitTests/            62 tests
+  Tests/FioKitTests/            Domain and application regression tests
 
 Fio/                            iOS application shell for Fio
   Infrastructure/
     Audio/                        Capture, storage, playback, retranscription
     Intelligence/                 Foundation Models adapters
     Persistence/                  SwiftData records and repositories
+    Background/                   Local Dream scheduling
+    Performance/                  Opt-in Debug benchmarks
   Presentation/
     Screens/                      Timeline, recording, entry, insights, reviews
     AppPreferences.swift          Appearance and interface language
-    JournalStore.swift            Observable application façade
+    JournalStore*.swift           Observable façade split by responsibility
     Theme.swift                   Adaptive G4 OS Clean-inspired palette
+
+FioUITests/                     Deterministic critical-journey UI tests
 ```
 
 The dependency rule is:
@@ -85,8 +94,11 @@ Presentation → Application → Domain
 Infrastructure → Application ports
 ```
 
-`FioKit` imports no SwiftUI, SwiftData, Speech, or Foundation Models. It can
-build and test independently on macOS and Linux.
+`FioKit` imports no SwiftUI, SwiftData, Speech, or Foundation Models. Domain
+rules and use cases stay independent from the iOS adapters. Persistence
+mutations that span suspension points are serialized, and foreground
+activation reloads authoritative local snapshots before background
+maintenance resumes.
 
 ## Requirements
 
@@ -120,19 +132,39 @@ domain package is named `FioKit`.
 
 ## Tests
 
-Run the platform-independent test suite:
+Run the platform-independent test suite and the critical UI journeys:
 
 ```sh
-cd FioKit
-swift test
+swift test --package-path FioKit
+xcodebuild test \
+  -project Fio.xcodeproj \
+  -scheme Fio \
+  -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+  -only-testing:FioUITests
 ```
 
-Current status: **62 tests, 0 failures.**
+Current status: **98 domain/application tests and 3 critical UI journeys, all
+passing.** The UI suite covers search-to-detail navigation,
+writing/saving/deleting an entry, Insights, Reviews, and recorder
+presentation.
+
+## Performance
+
+Fio includes an explicit Debug-only benchmark with a deterministic journal of
+2,000 entries and 100 topics. Compared with the recorded baseline:
+
+- journal refresh p90 improved from **459.4 ms to 209.3 ms**;
+- first content ready p90 improved from **1,106.6 ms to 884.5 ms**;
+- search p90 is **25.0 ms**, and saving entry context p90 is **48.8 ms**.
+
+The fixture is opt-in, excluded from Release behavior, and does not add
+analytics. See [PERFORMANCE.md](PERFORMANCE.md) for p50/p90/p99 results and
+reproduction instructions.
 
 ## Privacy model
 
-- Entries, transcripts, reflections, reviews, metrics, and private M4A files
-  are stored only on the iPhone.
+- Entries, transcripts, reflections, reviews, topics, Dream suggestions,
+  metrics, and private M4A files are stored only on the iPhone.
 - No account, device identifier collection, analytics SDK, or ad SDK exists.
 - Fio has no application-owned networking code path.
 - iOS may download Apple speech/model assets through system frameworks.

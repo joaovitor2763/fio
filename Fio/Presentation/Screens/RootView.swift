@@ -40,11 +40,9 @@ struct RootView: View {
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active,
-               hasCompletedInitialLoad,
-               store.isLoaded {
+               hasCompletedInitialLoad {
                 Task {
-                    await store.composeDueReviews()
-                    await store.runDreamIfNeeded()
+                    await synchronizeForegroundJournal()
                 }
             } else if phase == .background {
                 DreamScheduler.schedule()
@@ -99,6 +97,14 @@ struct RootView: View {
         async let preloadAssets: Void = preloadTranscriptionAssetsIfNeeded()
         await store.composeDueReviews()
         await preloadAssets
+        DreamScheduler.schedule()
+        await store.runDreamIfNeeded()
+    }
+
+    private func synchronizeForegroundJournal() async {
+        await store.refresh()
+        guard store.isLoaded else { return }
+        await store.composeDueReviews()
         DreamScheduler.schedule()
         await store.runDreamIfNeeded()
     }

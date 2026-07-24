@@ -11,8 +11,8 @@ Percentiles use 20 independent launches.
 
 | Metric | Before p50 / p90 / p99 | Current p50 / p90 / p99 | p90 change |
 | --- | ---: | ---: | ---: |
-| Journal refresh | 448.9 / 459.4 / 461.8 ms | 200.8 / 203.7 / 208.1 ms | -55.7% |
-| First content ready | 1,096.1 / 1,106.6 / 1,108.8 ms | 876.0 / 881.0 / 889.4 ms | -20.4% |
+| Journal refresh | 448.9 / 459.4 / 461.8 ms | 194.7 / 209.3 / 299.8 ms | -54.4% |
+| First content ready | 1,096.1 / 1,106.6 / 1,108.8 ms | 865.6 / 884.5 / 1,202.0 ms | -20.1% |
 
 The operation fixture also measured:
 
