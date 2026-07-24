@@ -2413,18 +2413,18 @@
         }
       }
     },
-    "Your private voice journal" : {
+    "Your private journal" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu diario de voz privado"
+            "value" : "Tu diario privado"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seu diário de voz privado"
+            "value" : "Seu diário privado"
           }
         }
       }

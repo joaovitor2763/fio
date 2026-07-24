@@ -43,7 +43,7 @@ struct InsightsScreen: View {
                 )
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Your private voice journal")
+                Text("Your private journal")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.primaryText)
                 Text("No account · only this iPhone")
@@ -51,7 +51,7 @@ struct InsightsScreen: View {
                     .foregroundStyle(Theme.secondaryText)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     private var statisticsPanel: some View {
