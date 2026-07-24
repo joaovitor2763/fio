@@ -31,6 +31,9 @@ struct RootView: View {
         .fullScreenCover(isPresented: $showTextEntry) {
             TextEntryScreen()
         }
+        .sensoryFeedback(.impact(weight: .light), trigger: utilityDestination) { oldValue, newValue in
+            oldValue == nil && newValue != nil
+        }
         .task {
             async let preloadAssets: Void = RecordingSession.preloadTranscriptionAssets()
             await store.refresh()
@@ -66,7 +69,7 @@ struct RootView: View {
             } label: {
                 secondaryAction(systemName: "person.crop.circle")
             }
-            .buttonStyle(.plain)
+            .buttonStyle(UtilityActionButtonStyle())
             .accessibilityLabel("Fio profile and insights")
 
             recordButton
@@ -76,7 +79,7 @@ struct RootView: View {
             } label: {
                 secondaryAction(systemName: "book.pages")
             }
-            .buttonStyle(.plain)
+            .buttonStyle(UtilityActionButtonStyle())
             .accessibilityLabel("Weekly reviews")
         }
         .frame(maxWidth: .infinity)
@@ -221,7 +224,7 @@ struct RootView: View {
     }
 }
 
-private enum UtilityDestination {
+private enum UtilityDestination: Equatable {
     case insights
     case reviews
 }

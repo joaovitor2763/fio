@@ -50,6 +50,21 @@ struct CardButtonStyle: ButtonStyle {
     }
 }
 
+/// Immediate touch feedback for the small utility actions around the recorder.
+struct UtilityActionButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .background {
+                Circle()
+                    .fill(Theme.card)
+                    .scaleEffect(configuration.isPressed ? 1 : 0.72)
+                    .opacity(configuration.isPressed ? 1 : 0)
+            }
+            .scaleEffect(configuration.isPressed ? 0.90 : 1)
+            .animation(Motion.quick, value: configuration.isPressed)
+    }
+}
+
 extension View {
     /// Keeps navigation chrome visually absent at the scroll edge, then lets
     /// the system reveal a translucent surface as content moves underneath it.
