@@ -131,7 +131,8 @@ struct RecordScreen: View {
             transcriptText: recording.transcript,
             duration: recording.duration,
             audioFileName: recording.audioFileName,
-            replacing: replacingEntryID
+            replacing: replacingEntryID,
+            applyPersonalVocabulary: true
         )
         dismiss()
     }

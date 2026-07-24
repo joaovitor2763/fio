@@ -22,10 +22,11 @@ struct EntryDetailScreen: View {
     @State private var transcriptEditorError: String?
     @State private var reflectionEditorError: String?
     @State private var exportPayload: ExportPayload?
+    @State private var vocabularySuggestion: VocabularySuggestion?
     @State private var draftContext = ""
     @State private var draftTranscript = ""
     @State private var draftHeadline = ""
-    @State private var draftObservations = ""
+    @State private var draftObservations: [ReflectionObservationDraft] = []
     @State private var audioPlayer = AudioPlaybackController()
 
     private var entry: Entry? { store.entry(withID: entryID) }
@@ -132,6 +133,28 @@ struct EntryDetailScreen: View {
         } message: {
             Text("It is only stored on this phone, so this removes it everywhere it exists.")
         }
+        .confirmationDialog(
+            "Use this correction next time?",
+            isPresented: Binding(
+                get: { vocabularySuggestion != nil },
+                set: { if !$0 { vocabularySuggestion = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            if let suggestion = vocabularySuggestion {
+                Button(
+                    "Always replace “\(suggestion.source)” with “\(suggestion.replacement)”"
+                ) {
+                    PersonalVocabulary.add(suggestion)
+                    vocabularySuggestion = nil
+                }
+            }
+            Button("Not now", role: .cancel) {
+                vocabularySuggestion = nil
+            }
+        } message: {
+            Text("Fio will apply this on future transcriptions before creating a reflection.")
+        }
         .alert(
             "Entry could not be updated",
             isPresented: Binding(
@@ -179,7 +202,9 @@ struct EntryDetailScreen: View {
         Menu {
             Button {
                 draftHeadline = entry.reflection.headline
-                draftObservations = entry.reflection.observations.joined(separator: "\n")
+                draftObservations = entry.reflection.observations.map {
+                    ReflectionObservationDraft(text: $0)
+                }
                 showReflectionEditor = true
             } label: {
                 Label("Edit reflection", systemImage: "pencil")
@@ -215,7 +240,11 @@ struct EntryDetailScreen: View {
     }
 
     private func transcriptSection(for entry: Entry) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let vocabularyApplication = PersonalVocabulary.apply(
+            to: entry.transcript.text
+        )
+
+        return VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("Transcript")
                     .font(.footnote.weight(.medium))
@@ -234,6 +263,23 @@ struct EntryDetailScreen: View {
                     .font(.body)
                     .foregroundStyle(Theme.secondaryText)
             } else {
+                if vocabularyApplication.appliedCount > 0 {
+                    Button {
+                        applyVocabulary(
+                            vocabularyApplication,
+                            to: entry
+                        )
+                    } label: {
+                        Label(
+                            "Apply personal vocabulary",
+                            systemImage: "text.badge.checkmark"
+                        )
+                        .font(.footnote)
+                        .foregroundStyle(Theme.secondaryText)
+                    }
+                    .buttonStyle(.plain)
+                }
+
                 Text(entry.transcript.text)
                     .font(.body)
                     .lineSpacing(5)
@@ -488,6 +534,15 @@ struct EntryDetailScreen: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
+                        let currentRules = PersonalVocabulary.rules
+                        let suggestion = currentRules.count
+                            < PersonalVocabulary.maximumRuleCount
+                            ? VocabularyProcessor.suggestion(
+                                from: entry.transcript.text,
+                                to: draftTranscript,
+                                existingRules: currentRules
+                            )
+                            : nil
                         Task {
                             do {
                                 try await store.saveTranscript(
@@ -495,6 +550,7 @@ struct EntryDetailScreen: View {
                                     forEntryID: entry.id
                                 )
                                 showTranscriptEditor = false
+                                vocabularySuggestion = suggestion
                             } catch {
                                 transcriptEditorError = error.localizedDescription
                             }
@@ -525,30 +581,70 @@ struct EntryDetailScreen: View {
     private func reflectionEditor(for entry: Entry) -> some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Headline")
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(Theme.secondaryText)
-                        TextField("Main observation", text: $draftHeadline, axis: .vertical)
-                            .textFieldStyle(.plain)
-                            .padding(12)
-                            .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Each item below appears as a bullet in the reflection.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.secondaryText)
+
+                    VStack(spacing: 0) {
+                        reflectionBulletField(
+                            placeholder: "Main observation",
+                            text: $draftHeadline
+                        )
+
+                        ForEach($draftObservations) { $observation in
+                            Divider()
+                                .overlay(Theme.cardStroke)
+                                .padding(.leading, 36)
+
+                            HStack(alignment: .top, spacing: 10) {
+                                Text("•")
+                                    .foregroundStyle(Theme.secondaryText)
+                                    .padding(.top, 13)
+                                TextField(
+                                    "Further observation",
+                                    text: $observation.text,
+                                    axis: .vertical
+                                )
+                                .textFieldStyle(.plain)
+                                .padding(.vertical, 12)
+
+                                Button {
+                                    draftObservations.removeAll {
+                                        $0.id == observation.id
+                                    }
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(Theme.tertiaryText)
+                                        .padding(.top, 13)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Remove observation")
+                            }
+                            .padding(.horizontal, 14)
+                        }
+                    }
+                    .background(
+                        RoundedRectangle(cornerRadius: 18).fill(Theme.card)
+                    )
+
+                    if draftObservations.count < 3 {
+                        Button {
+                            draftObservations.append(
+                                ReflectionObservationDraft(text: "")
+                            )
+                        } label: {
+                            Label("Add observation", systemImage: "plus")
+                                .font(.footnote.weight(.medium))
+                                .foregroundStyle(Theme.primaryText)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.top, 4)
                     }
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("Further observations")
-                            .font(.footnote.weight(.medium))
-                            .foregroundStyle(Theme.secondaryText)
-                        Text("Put each observation on a separate line. Up to three are kept.")
-                            .font(.caption)
-                            .foregroundStyle(Theme.tertiaryText)
-                        TextEditor(text: $draftObservations)
-                            .scrollContentBackground(.hidden)
-                            .padding(12)
-                            .frame(minHeight: 180)
-                            .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
-                    }
+                    Text("The first bullet is the main observation. You can add up to three more.")
+                        .font(.caption)
+                        .foregroundStyle(Theme.tertiaryText)
                 }
                 .padding(20)
             }
@@ -562,13 +658,21 @@ struct EntryDetailScreen: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         let observations = draftObservations
-                            .split(whereSeparator: \.isNewline)
-                            .map(String.init)
+                            .flatMap {
+                                $0.text.split(whereSeparator: \.isNewline)
+                            }
+                            .map {
+                                String($0).trimmingCharacters(
+                                    in: .whitespacesAndNewlines
+                                )
+                            }
+                            .filter { !$0.isEmpty }
+                            .prefix(3)
                         Task {
                             do {
                                 try await store.saveReflection(
                                     headline: draftHeadline,
-                                    observations: observations,
+                                    observations: Array(observations),
                                     forEntryID: entry.id
                                 )
                                 showReflectionEditor = false
@@ -591,6 +695,37 @@ struct EntryDetailScreen: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(reflectionEditorError ?? "")
+        }
+    }
+
+    private func reflectionBulletField(
+        placeholder: LocalizedStringKey,
+        text: Binding<String>
+    ) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Text("•")
+                .foregroundStyle(Theme.secondaryText)
+                .padding(.top, 13)
+            TextField(placeholder, text: text, axis: .vertical)
+                .textFieldStyle(.plain)
+                .padding(.vertical, 12)
+        }
+        .padding(.horizontal, 14)
+    }
+
+    private func applyVocabulary(
+        _ application: VocabularyApplication,
+        to entry: Entry
+    ) {
+        Task {
+            do {
+                try await store.saveTranscript(
+                    application.text,
+                    forEntryID: entry.id
+                )
+            } catch {
+                updateError = error.localizedDescription
+            }
         }
     }
 
@@ -630,6 +765,16 @@ struct EntryDetailScreen: View {
 private struct ExportPayload: Identifiable {
     let id = UUID()
     let items: [Any]
+}
+
+private struct ReflectionObservationDraft: Identifiable {
+    let id: UUID
+    var text: String
+
+    init(id: UUID = UUID(), text: String) {
+        self.id = id
+        self.text = text
+    }
 }
 
 private struct ActivityShareSheet: UIViewControllerRepresentable {

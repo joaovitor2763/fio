@@ -111,6 +111,22 @@
         }
       }
     },
+    "A replacement for this word already exists." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya existe un reemplazo para esta palabra."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já existe uma substituição para esta palavra."
+          }
+        }
+      }
+    },
     "Active days" : {
       "localizations" : {
         "es" : {
@@ -145,14 +161,50 @@
     },
     "Add" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Añadir" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Adicionar" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar"
+          }
+        }
+      }
+    },
+    "Add a word Fio often hears incorrectly, such as G4S → G4OS." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade una palabra que Fio suele oír mal, como G4S → G4OS."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione uma palavra que o Fio costuma ouvir errado, como G4S → G4OS."
+          }
+        }
       }
     },
     "Add an optional preference for future reflections." : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Añade una preferencia opcional para futuras reflexiones." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Adicione uma preferência opcional para reflexões futuras." } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade una preferencia opcional para futuras reflexiones."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione uma preferência opcional para reflexões futuras."
+          }
+        }
       }
     },
     "Add context" : {
@@ -171,6 +223,54 @@
         }
       }
     },
+    "Add observation" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir observación"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar observação"
+          }
+        }
+      }
+    },
+    "Add the version Fio hears first, then the spelling you want to keep." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añade primero la versión que Fio oye y después la escritura que quieres conservar."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicione primeiro a versão que o Fio ouve e depois a grafia que você quer manter."
+          }
+        }
+      }
+    },
+    "Add word" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir palabra"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar palavra"
+          }
+        }
+      }
+    },
     "Added later" : {
       "localizations" : {
         "es" : {
@@ -183,6 +283,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Adicionado depois"
+          }
+        }
+      }
+    },
+    "Always replace “%@” with “%@”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Always replace “%1$@” with “%2$@”"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reemplazar siempre “%1$@” por “%2$@”"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sempre substituir “%1$@” por “%2$@”"
           }
         }
       }
@@ -215,6 +337,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O transcritor da Apple precisa de um idioma antes do início da gravação. Automático segue as preferências do iPhone; ele não detecta o idioma pelo áudio."
+          }
+        }
+      }
+    },
+    "Apply personal vocabulary" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicar vocabulario personal"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aplicar vocabulário pessoal"
           }
         }
       }
@@ -320,8 +458,18 @@
     },
     "Choose what reflections should emphasize" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Elige qué deben destacar las reflexiones" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Escolha o que as reflexões devem enfatizar" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige qué deben destacar las reflexiones"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha o que as reflexões devem enfatizar"
+          }
+        }
       }
     },
     "Close" : {
@@ -342,14 +490,34 @@
     },
     "Correct the words below. Saving will regenerate the reflection from the edited transcript." : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Corrige las palabras de abajo. Al guardar, la reflexión se regenerará a partir de la transcripción editada." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Corrija as palavras abaixo. Ao salvar, a reflexão será regenerada a partir da transcrição editada." } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrige las palabras de abajo. Al guardar, la reflexión se regenerará a partir de la transcripción editada."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corrija as palavras abaixo. Ao salvar, a reflexão será regenerada a partir da transcrição editada."
+          }
+        }
       }
     },
     "Create reflection" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Crear reflexión" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Criar reflexão" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crear reflexión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Criar reflexão"
+          }
+        }
       }
     },
     "Current streak" : {
@@ -480,22 +648,68 @@
         }
       }
     },
+    "Each item below appears as a bullet in the reflection." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada elemento aparece como un punto en la reflexión."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada item abaixo aparece como um bullet na reflexão."
+          }
+        }
+      }
+    },
     "Edit" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Editar" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar"
+          }
+        }
       }
     },
     "Edit reflection" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar reflexión" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Editar reflexão" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar reflexión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar reflexão"
+          }
+        }
       }
     },
     "Edit transcript" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Editar transcripción" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Editar transcrição" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar transcripción"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editar transcrição"
+          }
+        }
       }
     },
     "Edit your added context" : {
@@ -532,14 +746,34 @@
     },
     "Entry could not be updated" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "No se pudo actualizar la entrada" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Não foi possível atualizar a entrada" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo actualizar la entrada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível atualizar a entrada"
+          }
+        }
       }
     },
     "Expand" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ampliar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Expandir" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ampliar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Expandir"
+          }
+        }
       }
     },
     "Export" : {
@@ -660,17 +894,76 @@
     "Fio profile and insights" : {
 
     },
+    "Fio will apply this on future transcriptions before creating a reflection." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fio lo aplicará a futuras transcripciones antes de crear una reflexión."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fio aplicará isso nas próximas transcrições antes de criar uma reflexão."
+          }
+        }
+      }
+    },
     "For example: “Focus on decisions and recurring themes. Use direct language.” Fio still stays factual and never gives advice or invents details." : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Por ejemplo: “Céntrate en las decisiones y los temas recurrentes. Usa un lenguaje directo.” Fio sigue ateniéndose a los hechos y nunca da consejos ni inventa detalles." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Por exemplo: “Dê foco às decisões e aos temas recorrentes. Use linguagem direta.” O Fio continua fiel aos fatos e nunca dá conselhos nem inventa detalhes." } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por ejemplo: “Céntrate en las decisiones y los temas recurrentes. Usa un lenguaje directo.” Fio sigue ateniéndose a los hechos y nunca da consejos ni inventa detalles."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Por exemplo: “Dê foco às decisões e aos temas recorrentes. Use linguagem direta.” O Fio continua fiel aos fatos e nunca dá conselhos nem inventa detalhes."
+          }
+        }
+      }
+    },
+    "Further observation" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otra observación"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outra observação"
+          }
+        }
       }
     },
     "Further observations" : {
+      "extractionState" : "stale",
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Más observaciones" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Outras observações" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más observaciones"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outras observações"
+          }
+        }
       }
+    },
+    "G4OS" : {
+
+    },
+    "G4S" : {
+
     },
     "Got it" : {
       "localizations" : {
@@ -689,9 +982,20 @@
       }
     },
     "Headline" : {
+      "extractionState" : "stale",
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Observación principal" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Observação principal" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observación principal"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observação principal"
+          }
+        }
       }
     },
     "Interface language" : {
@@ -856,14 +1160,34 @@
     },
     "Main observation" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Observación principal" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Observação principal" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observación principal"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Observação principal"
+          }
+        }
       }
     },
     "Make shorter" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Acortar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Deixar mais curto" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acortar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixar mais curto"
+          }
+        }
       }
     },
     "Minutes spoken per day this week" : {
@@ -948,8 +1272,18 @@
     },
     "No results" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Sin resultados" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Nenhum resultado" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin resultados"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhum resultado"
+          }
+        }
       }
     },
     "No reviews yet." : {
@@ -968,6 +1302,22 @@
         }
       }
     },
+    "No words yet" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aún no hay palabras"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nenhuma palavra ainda"
+          }
+        }
+      }
+    },
     "Not enough data yet" : {
       "localizations" : {
         "es" : {
@@ -980,6 +1330,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ainda não há dados suficientes"
+          }
+        }
+      }
+    },
+    "Not now" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ahora no"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Agora não"
           }
         }
       }
@@ -1021,8 +1387,18 @@
     },
     "Observer guidance" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Orientación del observador" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Orientação do observador" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orientación del observador"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Orientação do observador"
+          }
+        }
       }
     },
     "On Sunday, Fio reads the week back to you — what repeated, what shifted. You don't have to do anything." : {
@@ -1105,6 +1481,22 @@
         }
       }
     },
+    "Personal vocabulary" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vocabulario personal"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vocabulário pessoal"
+          }
+        }
+      }
+    },
     "Play audio" : {
       "localizations" : {
         "es" : {
@@ -1156,6 +1548,22 @@
         }
       }
     },
+    "Preview" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vista previa"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prévia"
+          }
+        }
+      }
+    },
     "Previous week" : {
       "localizations" : {
         "es" : {
@@ -1173,9 +1581,20 @@
       }
     },
     "Put each observation on a separate line. Up to three are kept." : {
+      "extractionState" : "stale",
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Escribe cada observación en una línea separada. Se conservarán hasta tres." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Coloque cada observação em uma linha separada. Até três serão mantidas." } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe cada observación en una línea separada. Se conservarán hasta tres."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coloque cada observação em uma linha separada. Até três serão mantidas."
+          }
+        }
       }
     },
     "Re-record" : {
@@ -1244,20 +1663,98 @@
     },
     "Reflect again" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Generar otra reflexión" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Refazer reflexão" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generar otra reflexión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refazer reflexão"
+          }
+        }
       }
     },
     "Reflection" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reflexión" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Reflexão" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reflexión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reflexão"
+          }
+        }
       }
     },
     "Reflection options" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Opciones de reflexión" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Opções da reflexão" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opciones de reflexión"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opções da reflexão"
+          }
+        }
+      }
+    },
+    "Remove observation" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar observación"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover observação"
+          }
+        }
+      }
+    },
+    "Replace with" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reemplazar por"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Substituir por"
+          }
+        }
+      }
+    },
+    "Replacements" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reemplazos"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Substituições"
+          }
+        }
       }
     },
     "Resume" : {
@@ -1342,26 +1839,66 @@
     },
     "Search" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Buscar" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar"
+          }
+        }
       }
     },
     "Search every transcript, reflection, and note stored on this iPhone." : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Busca en todas las transcripciones, reflexiones y notas guardadas en este iPhone." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Busque em todas as transcrições, reflexões e notas armazenadas neste iPhone." } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Busca en todas las transcripciones, reflexiones y notas guardadas en este iPhone."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Busque em todas as transcrições, reflexões e notas armazenadas neste iPhone."
+          }
+        }
       }
     },
     "Search transcript, reflection, and context" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar en transcripción, reflexión y contexto" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Buscar em transcrição, reflexão e contexto" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar en transcripción, reflexión y contexto"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar em transcrição, reflexão e contexto"
+          }
+        }
       }
     },
     "Search your journal" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar en tu diario" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Buscar no seu diário" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar en tu diario"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar no seu diário"
+          }
+        }
       }
     },
     "Spanish" : {
@@ -1396,6 +1933,22 @@
         }
       }
     },
+    "Swipe a replacement to delete it. New rules affect future transcriptions; existing entries only change when you apply the vocabulary manually." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza un reemplazo para eliminarlo. Las reglas nuevas afectan a futuras transcripciones; las entradas existentes solo cambian cuando aplicas el vocabulario manualmente."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deslize uma substituição para excluí-la. Novas regras afetam transcrições futuras; entradas existentes só mudam quando você aplica o vocabulário manualmente."
+          }
+        }
+      }
+    },
     "Tap the microphone to speak, or hold it to write. Nothing leaves this phone." : {
       "localizations" : {
         "es" : {
@@ -1412,6 +1965,38 @@
         }
       }
     },
+    "Teach Fio names and terms you use. Corrections happen on this iPhone before a reflection is created." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enseña a Fio los nombres y términos que usas. Las correcciones ocurren en este iPhone antes de crear una reflexión."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ensine ao Fio os nomes e termos que você usa. As correções acontecem neste iPhone antes de criar uma reflexão."
+          }
+        }
+      }
+    },
+    "Teach Fio names and words you use" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enseña a Fio los nombres y palabras que usas"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ensine ao Fio os nomes e palavras que você usa"
+          }
+        }
+      }
+    },
     "Text" : {
       "localizations" : {
         "es" : {
@@ -1424,6 +2009,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Texto"
+          }
+        }
+      }
+    },
+    "The first bullet is the main observation. You can add up to three more." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El primer punto es la observación principal. Puedes añadir hasta tres más."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O primeiro bullet é a observação principal. Você pode adicionar até mais três."
           }
         }
       }
@@ -1472,6 +2073,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Isto se torna a sua semana."
+          }
+        }
+      }
+    },
+    "This replacement overlaps with another rule." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este reemplazo se superpone con otra regla."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta substituição entra em conflito com outra regra."
           }
         }
       }
@@ -1558,8 +2175,18 @@
     },
     "Transcript" : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Transcripción" } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Transcrição" } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcripción"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcrição"
+          }
+        }
       }
     },
     "Transcription language" : {
@@ -1596,8 +2223,34 @@
     },
     "Try a different word or phrase." : {
       "localizations" : {
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Prueba con otra palabra o frase." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Tente outra palavra ou frase." } }
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba con otra palabra o frase."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tente outra palavra ou frase."
+          }
+        }
+      }
+    },
+    "Use this correction next time?" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Usar esta corrección la próxima vez?"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar esta correção da próxima vez?"
+          }
+        }
       }
     },
     "Uses the first supported preferred language" : {
@@ -1612,6 +2265,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usa o primeiro idioma preferido compatível"
+          }
+        }
+      }
+    },
+    "Vocabulary replacement" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reemplazo de vocabulario"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Substituição de vocabulário"
           }
         }
       }
@@ -1644,6 +2313,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "O que está passando pela sua cabeça?"
+          }
+        }
+      }
+    },
+    "When Fio writes" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando Fio escribe"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando o Fio escreve"
           }
         }
       }

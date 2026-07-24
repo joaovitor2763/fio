@@ -230,6 +230,30 @@ struct InsightsScreen: View {
             .buttonStyle(.plain)
 
             NavigationLink {
+                PersonalVocabularyScreen()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "text.badge.checkmark")
+                        .frame(width: 24)
+                        .foregroundStyle(Theme.secondaryText)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Personal vocabulary")
+                            .foregroundStyle(Theme.primaryText)
+                        Text("Teach Fio names and words you use")
+                            .font(.footnote)
+                            .foregroundStyle(Theme.secondaryText)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(Theme.tertiaryText)
+                }
+                .padding(16)
+                .background(RoundedRectangle(cornerRadius: 18).fill(Theme.card))
+            }
+            .buttonStyle(.plain)
+
+            NavigationLink {
                 ObserverGuidanceScreen()
             } label: {
                 HStack(spacing: 12) {

@@ -104,14 +104,18 @@ final class JournalStore {
         transcriptText: String,
         duration: TimeInterval,
         audioFileName: String?,
-        replacing replacedID: UUID? = nil
+        replacing replacedID: UUID? = nil,
+        applyPersonalVocabulary: Bool = false
     ) async {
         let replacedAudioFileName = replacedID.flatMap { entry(withID: $0)?.audioFileName }
+        let textToSave = applyPersonalVocabulary
+            ? PersonalVocabulary.apply(to: transcriptText).text
+            : transcriptText
 
         let savedEntry: Entry
         do {
             guard let saved = try await recordEntry.execute(
-                transcriptText: transcriptText,
+                transcriptText: textToSave,
                 duration: duration,
                 audioFileName: audioFileName,
                 replacing: replacedID
@@ -213,9 +217,10 @@ final class JournalStore {
             fileName: fileName,
             locale: locale
         )
+        let correctedTranscript = PersonalVocabulary.apply(to: transcript).text
         guard let updated = try await replaceTranscript.execute(
             entryID: entryID,
-            transcriptText: transcript
+            transcriptText: correctedTranscript
         ) else {
             throw JournalStoreError.transcriptionUnavailable
         }
