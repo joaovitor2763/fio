@@ -1,4 +1,5 @@
 import SwiftUI
+import Charts
 import FioKit
 
 // MARK: - Topics
@@ -226,38 +227,174 @@ struct DreamTeaserCard: View {
     }
 }
 
-// MARK: - Sparkline
+// MARK: - Weekly activity
 
-/// A thin line through the week's minutes, a dot per day.
-struct Sparkline: View {
+/// A contextual chart of the week's speaking rhythm, Monday through Sunday.
+struct WeeklyActivityChart: View {
+    let weekStart: Date
     let values: [Double]
+    @Environment(\.locale) private var locale
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    private struct DayPoint: Identifiable {
+        let index: Int
+        let date: Date
+        let minutes: Double
+
+        var id: Int { index }
+    }
 
     var body: some View {
-        Canvas { canvas, size in
-            guard values.count > 1 else { return }
-            let maximum = max(values.max() ?? 1, 0.001)
-            let stepX = size.width / CGFloat(values.count - 1)
-            let inset: CGFloat = 6
+        VStack(alignment: .leading, spacing: 18) {
+            metricHeader
 
-            func point(_ index: Int) -> CGPoint {
-                let normalized = values[index] / maximum
-                let y = inset + (1 - CGFloat(normalized)) * (size.height - inset * 2)
-                return CGPoint(x: CGFloat(index) * stepX, y: y)
+            Chart(dayPoints) { point in
+                AreaMark(
+                    x: .value("Day", point.index),
+                    y: .value("Minutes", point.minutes)
+                )
+                .interpolationMethod(.monotone)
+                .foregroundStyle(
+                    LinearGradient(
+                        colors: [
+                            Theme.accent.opacity(0.28),
+                            Theme.accent.opacity(0.015)
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                )
+
+                LineMark(
+                    x: .value("Day", point.index),
+                    y: .value("Minutes", point.minutes)
+                )
+                .interpolationMethod(.monotone)
+                .lineStyle(StrokeStyle(lineWidth: 2.25, lineCap: .round, lineJoin: .round))
+                .foregroundStyle(Theme.primaryText.opacity(0.82))
+
+                PointMark(
+                    x: .value("Day", point.index),
+                    y: .value("Minutes", point.minutes)
+                )
+                .symbolSize(point.minutes > 0 ? 42 : 22)
+                .foregroundStyle(
+                    point.minutes > 0
+                        ? Theme.accent
+                        : Theme.tertiaryText.opacity(0.45)
+                )
             }
-
-            var path = Path()
-            path.move(to: point(0))
-            for index in 1..<values.count {
-                path.addLine(to: point(index))
+            .chartXScale(domain: 0...max(values.count - 1, 1))
+            .chartYScale(domain: 0...chartMaximum)
+            .chartXAxis {
+                AxisMarks(values: dayPoints.map(\.index)) { value in
+                    AxisValueLabel {
+                        if let index = value.as(Int.self),
+                           let point = dayPoints.first(where: { $0.index == index }) {
+                            Text(
+                                point.date.formatted(
+                                    .dateTime.weekday(.narrow).locale(locale)
+                                )
+                            )
+                            .font(.caption2.weight(.medium))
+                            .foregroundStyle(Theme.tertiaryText)
+                        }
+                    }
+                }
             }
-            canvas.stroke(path, with: .color(Theme.primaryText.opacity(0.7)), lineWidth: 1)
+            .chartYAxis(.hidden)
+            .frame(height: 128)
+        }
+        .padding(20)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(Theme.card)
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(Theme.cardStroke.opacity(0.7), lineWidth: 1)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Weekly speaking activity")
+        .accessibilityValue(
+            "\(totalDuration) recorded across \(activeDayCount) active days"
+        )
+    }
 
-            for index in values.indices {
-                let center = point(index)
-                let dot = Path(ellipseIn: CGRect(x: center.x - 2.5, y: center.y - 2.5, width: 5, height: 5))
-                canvas.fill(dot, with: .color(Theme.primaryText))
+    @ViewBuilder
+    private var metricHeader: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 14) {
+                durationMetric
+                activeDaysMetric(alignment: .leading)
+            }
+        } else {
+            HStack(alignment: .firstTextBaseline, spacing: 16) {
+                durationMetric
+                Spacer(minLength: 8)
+                activeDaysMetric(alignment: .trailing)
             }
         }
-        .accessibilityLabel("Minutes spoken per day this week")
+    }
+
+    private var durationMetric: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(totalDuration)
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(Theme.primaryText)
+                .contentTransition(.numericText())
+            Text("recorded this week")
+                .font(.caption)
+                .foregroundStyle(Theme.secondaryText)
+        }
+    }
+
+    private func activeDaysMetric(alignment: HorizontalAlignment) -> some View {
+        VStack(alignment: alignment, spacing: 3) {
+            Text("\(activeDayCount)")
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(Theme.primaryText)
+                .contentTransition(.numericText())
+            Text(activeDayCount == 1 ? "active day" : "active days")
+                .font(.caption)
+                .foregroundStyle(Theme.secondaryText)
+        }
+    }
+
+    private var dayPoints: [DayPoint] {
+        values.enumerated().map { index, minutes in
+            DayPoint(
+                index: index,
+                date: Calendar.autoupdatingCurrent.date(
+                    byAdding: .day,
+                    value: index,
+                    to: weekStart
+                ) ?? weekStart,
+                minutes: max(minutes, 0)
+            )
+        }
+    }
+
+    private var activeDayCount: Int {
+        values.filter { $0 > 0 }.count
+    }
+
+    private var chartMaximum: Double {
+        max((values.max() ?? 0) * 1.18, 1)
+    }
+
+    private var totalDuration: String {
+        let totalMinutes = max(values.reduce(0, +), 0)
+        if totalMinutes < 1 {
+            return totalMinutes > 0 ? "<1 min" : "0 min"
+        }
+        if totalMinutes < 60 {
+            return "\(Int(totalMinutes.rounded())) min"
+        }
+
+        let roundedMinutes = Int(totalMinutes.rounded())
+        let hours = roundedMinutes / 60
+        let minutes = roundedMinutes % 60
+        return minutes == 0 ? "\(hours) hr" : "\(hours) hr \(minutes) min"
     }
 }
