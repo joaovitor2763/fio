@@ -143,9 +143,6 @@ extension JournalStore {
         }
         DreamScheduleState.markNeedsAnalysis()
         upsertEntry(updated)
-        Task {
-            await regenerateReflection(entryID: id)
-        }
     }
 
     func saveReflection(

@@ -109,6 +109,45 @@ extension EntryDetailScreen {
         .background(RoundedRectangle(cornerRadius: 22).fill(Theme.card))
     }
 
+    func reflectionRefreshSuggestion(for entry: Entry) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Transcript updated", systemImage: "checkmark.circle")
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Theme.primaryText)
+
+            Text("The current reflection was kept. Reflect again if you want it to consider your edits.")
+                .font(.footnote)
+                .foregroundStyle(Theme.secondaryText)
+
+            HStack(spacing: 16) {
+                Button("Reflect again") {
+                    regenerateReflection(for: entry, style: .standard)
+                }
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Theme.primaryText)
+
+                Button("Not now") {
+                    withAnimation(reduceMotion ? nil : Motion.quick) {
+                        showReflectionRefreshSuggestion = false
+                    }
+                }
+                .font(.footnote)
+                .foregroundStyle(Theme.tertiaryText)
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(Theme.accent.opacity(0.08))
+        )
+        .overlay {
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Theme.accent.opacity(0.28), lineWidth: 1)
+        }
+    }
+
     var dreamConsolidationAction: some View {
         VStack(alignment: .leading, spacing: 10) {
             Divider()

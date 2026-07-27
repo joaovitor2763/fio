@@ -31,6 +31,7 @@ struct EntryDetailScreen: View {
     @State var draftObservations: [ReflectionObservationDraft] = []
     @State var draftTopicNames: [String] = []
     @State var draftTopicInput = ""
+    @State var showReflectionRefreshSuggestion = false
     @State var audioPlayer = AudioPlaybackController()
 
     private var entry: Entry? { store.entry(withID: entryID) }
@@ -75,6 +76,10 @@ struct EntryDetailScreen: View {
                     }
                 } else {
                     emptyReflectionCard(for: entry)
+                }
+
+                if showReflectionRefreshSuggestion, !entry.reflection.isSilent {
+                    reflectionRefreshSuggestion(for: entry)
                 }
 
                 if !entry.displayObservations.isEmpty {

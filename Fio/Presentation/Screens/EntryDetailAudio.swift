@@ -144,6 +144,9 @@ extension EntryDetailScreen {
     }
 
     func regenerateReflection(for entry: Entry, style: ReflectionStyle) {
+        withAnimation(reduceMotion ? nil : Motion.quick) {
+            showReflectionRefreshSuggestion = false
+        }
         Task {
             await store.regenerateReflection(entryID: entry.id, style: style)
         }

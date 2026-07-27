@@ -501,18 +501,18 @@
         }
       }
     },
-    "Correct the words below. Saving will regenerate the reflection from the edited transcript." : {
+    "Correct the words below. Your reflection will stay as it is." : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Corrige las palabras de abajo. Al guardar, la reflexión se regenerará a partir de la transcripción editada."
+            "value" : "Corrige las palabras de abajo. Tu reflexión se mantendrá como está."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Corrija as palavras abaixo. Ao salvar, a reflexão será regenerada a partir da transcrição editada."
+            "value" : "Corrija as palavras abaixo. Sua reflexão será mantida como está."
           }
         }
       }
@@ -2164,6 +2164,22 @@
         }
       }
     },
+    "The current reflection was kept. Reflect again if you want it to consider your edits." : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se mantuvo la reflexión actual. Vuelve a generar la reflexión si quieres que tenga en cuenta tus cambios."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A reflexão atual foi mantida. Refaça a reflexão se quiser que ela considere suas alterações."
+          }
+        }
+      }
+    },
     "The first bullet is the main observation. You can add up to three more." : {
       "localizations" : {
         "es" : {
@@ -2336,6 +2352,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Transcrição"
+          }
+        }
+      }
+    },
+    "Transcript updated" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcripción actualizada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Transcrição atualizada"
           }
         }
       }

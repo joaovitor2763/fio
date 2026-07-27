@@ -246,10 +246,11 @@ final class AmendEntryContextUseCaseTests: XCTestCase {
 }
 
 final class ReplaceEntryTranscriptUseCaseTests: XCTestCase {
-    func testReplacesTranscriptAndClearsOldReflection() async throws {
+    func testReplacesTranscriptAndPreservesOldReflection() async throws {
         let repository = InMemoryEntryRepository()
         var entry = makeEntry()
-        entry.reflection = Reflection(headline: "An old interpretation.")
+        let reflection = Reflection(headline: "An old interpretation.")
+        entry.reflection = reflection
         try await repository.save(entry)
         let useCase = ReplaceEntryTranscriptUseCase(entries: repository)
 
@@ -259,7 +260,7 @@ final class ReplaceEntryTranscriptUseCaseTests: XCTestCase {
         )
 
         XCTAssertEqual(updated?.transcript.text, "Agora em português.")
-        XCTAssertTrue(updated?.reflection.isSilent == true)
+        XCTAssertEqual(updated?.reflection, reflection)
         XCTAssertEqual(repository.storage.first, updated)
     }
 

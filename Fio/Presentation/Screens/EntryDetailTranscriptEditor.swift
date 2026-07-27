@@ -5,7 +5,7 @@ extension EntryDetailScreen {
     func transcriptEditor(for entry: Entry) -> some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Correct the words below. Saving will regenerate the reflection from the edited transcript.")
+                Text("Correct the words below. Your reflection will stay as it is.")
                     .font(.footnote)
                     .foregroundStyle(Theme.secondaryText)
 
@@ -35,6 +35,9 @@ extension EntryDetailScreen {
                                 existingRules: currentRules
                             )
                             : nil
+                        let shouldSuggestReflectionRefresh =
+                            !entry.reflection.isSilent
+                            && Transcript(draftTranscript) != entry.transcript
                         Task {
                             do {
                                 try await store.saveTranscript(
@@ -43,6 +46,8 @@ extension EntryDetailScreen {
                                 )
                                 showTranscriptEditor = false
                                 vocabularySuggestion = suggestion
+                                showReflectionRefreshSuggestion =
+                                    shouldSuggestReflectionRefresh
                             } catch {
                                 transcriptEditorError = error.localizedDescription
                             }
@@ -74,12 +79,17 @@ extension EntryDetailScreen {
         _ application: VocabularyApplication,
         to entry: Entry
     ) {
+        let shouldSuggestReflectionRefresh =
+            !entry.reflection.isSilent
+            && Transcript(application.text) != entry.transcript
         Task {
             do {
                 try await store.saveTranscript(
                     application.text,
                     forEntryID: entry.id
                 )
+                showReflectionRefreshSuggestion =
+                    shouldSuggestReflectionRefresh
             } catch {
                 updateError = error.localizedDescription
             }
