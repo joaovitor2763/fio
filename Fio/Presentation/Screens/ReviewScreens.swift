@@ -23,6 +23,7 @@ struct ReviewScreen: View {
             .padding(.bottom, 48)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .scrollIndicators(.hidden)
         .background(Theme.background)
         .navigationTitle("Review")
         .navigationBarTitleDisplayMode(.inline)
