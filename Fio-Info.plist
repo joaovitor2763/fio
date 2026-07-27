@@ -16,6 +16,28 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.data</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>Fio Encrypted Backup</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.joaovitorsilva.fio.backup</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>fiobackup</string>
+				</array>
+				<key>public.mime-type</key>
+				<string>application/vnd.fio.backup</string>
+			</dict>
+		</dict>
+	</array>
 	<key>CFBundleName</key>
 	<string>Fio</string>
 	<key>CFBundlePackageType</key>

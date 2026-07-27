@@ -30,6 +30,7 @@ final class JournalStore {
     let entryRepository: EntryRepository
     let reviewRepository: ReviewRepository
     let topicRepository: TopicRepository
+    let backupService: JournalBackupServicing
     let topicDiscoveryService: TopicDiscoveryService
     let recordEntry: RecordEntryUseCase
     let annotateEntry: AnnotateEntryUseCase
@@ -63,6 +64,7 @@ final class JournalStore {
         entryRepository: EntryRepository,
         reviewRepository: ReviewRepository,
         topicRepository: TopicRepository,
+        backupService: JournalBackupServicing,
         reflectionService: ReflectionService,
         weekSummaryService: WeekSummaryService,
         topicDiscoveryService: TopicDiscoveryService
@@ -70,6 +72,7 @@ final class JournalStore {
         self.entryRepository = entryRepository
         self.reviewRepository = reviewRepository
         self.topicRepository = topicRepository
+        self.backupService = backupService
         self.topicDiscoveryService = topicDiscoveryService
         recordEntry = RecordEntryUseCase(entries: entryRepository)
         annotateEntry = AnnotateEntryUseCase(entries: entryRepository, reflector: reflectionService)

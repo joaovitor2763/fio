@@ -97,6 +97,31 @@ extension InsightsScreen {
                 .background(RoundedRectangle(cornerRadius: 18).fill(Theme.card))
             }
             .buttonStyle(.plain)
+
+            NavigationLink {
+                BackupScreen()
+            } label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "lock.doc")
+                        .frame(width: 24)
+                        .foregroundStyle(Theme.secondaryText)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text("Backup")
+                            .foregroundStyle(Theme.primaryText)
+                        Text("Encrypted export and import — no sync")
+                            .font(.footnote)
+                            .foregroundStyle(Theme.secondaryText)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(Theme.tertiaryText)
+                }
+                .padding(16)
+                .background(RoundedRectangle(cornerRadius: 18).fill(Theme.card))
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("backup-preference-link")
         }
     }
 

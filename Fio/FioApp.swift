@@ -36,6 +36,7 @@ struct FioApp: App {
             entryRepository: SwiftDataEntryRepository(context: context),
             reviewRepository: SwiftDataReviewRepository(context: context),
             topicRepository: topicRepository,
+            backupService: JournalBackupService(context: context),
             reflectionService: AppleIntelligenceReflectionService(),
             weekSummaryService: AppleIntelligenceWeekSummaryService(),
             topicDiscoveryService: AppleIntelligenceTopicDiscoveryService()

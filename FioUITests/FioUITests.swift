@@ -101,4 +101,35 @@ final class FioUITests: XCTestCase {
         app.buttons["Discard"].tap()
         XCTAssertTrue(app.buttons["journal-search-button"].waitForExistence(timeout: 4))
     }
+
+    func testBackupExplainsManualTransferAndAudioExclusion() {
+        let app = launchApp()
+        app.buttons["insights-button"].tap()
+
+        let backupLink = app.buttons["backup-preference-link"]
+        for _ in 0..<5 where !backupLink.isHittable {
+            app.swipeUp()
+        }
+        XCTAssertTrue(backupLink.isHittable)
+        backupLink.tap()
+
+        XCTAssertTrue(app.navigationBars["Backup"].waitForExistence(timeout: 4))
+        XCTAssertTrue(app.staticTexts["Export and import only"].exists)
+        XCTAssertTrue(
+            app.staticTexts.matching(
+                NSPredicate(
+                    format: "label CONTAINS[c] %@",
+                    "does not sync this backup automatically"
+                )
+            ).firstMatch.exists
+        )
+        XCTAssertTrue(
+            app.staticTexts.matching(
+                NSPredicate(
+                    format: "label CONTAINS[c] %@",
+                    "Audio recordings are never included"
+                )
+            ).firstMatch.exists
+        )
+    }
 }

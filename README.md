@@ -4,10 +4,10 @@ Fio is a private voice journal for iPhone. Speak or write an entry, keep the
 original audio, and let the on-device observer notice what repeated, shifted,
 or contradicted itself.
 
-**Nothing leaves your phone.** There is no account, analytics, tracking,
-third-party SDK, or application-owned network service. Recording,
-transcription, reflection, storage, playback, and usage insights all happen
-locally.
+**Nothing leaves your phone unless you explicitly export it.** There is no
+account, analytics, tracking, third-party SDK, application-owned network
+service, or automatic sync. Recording, transcription, reflection, storage,
+playback, and usage insights all happen locally.
 
 ## Inspiration
 
@@ -40,6 +40,9 @@ architecture, privacy model, interface, and feature set.
   days, common hours, and current/longest streaks are calculated on-device.
 - **Export** — share the transcript, original audio, or both using the system
   share sheet.
+- **Encrypted backup** — manually export or import the complete journal and
+  preferences with a one-time recovery phrase. This is not synchronization;
+  backup files never contain the original audio recordings.
 - **Appearance and language** — Light, Dark, or Automatic appearance; interface
   available in English, Portuguese (Brazil), and Spanish.
 
@@ -143,10 +146,10 @@ xcodebuild test \
   -only-testing:FioUITests
 ```
 
-Current status: **98 domain/application tests and 3 critical UI journeys, all
+Current status: **98 domain/application tests and 4 critical UI journeys, all
 passing.** The UI suite covers search-to-detail navigation,
-writing/saving/deleting an entry, Insights, Reviews, and recorder
-presentation.
+writing/saving/deleting an entry, Insights, Reviews, backup disclosure, and
+recorder presentation.
 
 ## Performance
 
@@ -165,6 +168,8 @@ reproduction instructions.
 
 - Entries, transcripts, reflections, reviews, topics, Dream suggestions,
   metrics, and private M4A files are stored only on the iPhone.
+- Encrypted backups are created only when requested, contain no M4A files, and
+  go only to the location the author chooses through the system file picker.
 - No account, device identifier collection, analytics SDK, or ad SDK exists.
 - Fio has no application-owned networking code path.
 - iOS may download Apple speech/model assets through system frameworks.
