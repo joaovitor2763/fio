@@ -288,7 +288,6 @@ final class JournalBackupService: JournalBackupServicing {
 }
 
 private enum RecoveryPhrase {
-    private static let wordCount = 16
     private static let words = """
     acorn amber anchor apple apron arrow atlas autumn badge bamboo beach berry
     birch bird bloom blue boat breeze brick brook brush cabin cactus candle
@@ -306,7 +305,7 @@ private enum RecoveryPhrase {
 
     static func generate() -> String {
         var generator = SystemRandomNumberGenerator()
-        return (0..<wordCount)
+        return (0..<RecoveryPhraseFormat.wordCount)
             .map { _ in words.randomElement(using: &generator)! }
             .joined(separator: " ")
     }

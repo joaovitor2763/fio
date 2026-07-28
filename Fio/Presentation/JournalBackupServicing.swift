@@ -1,5 +1,9 @@
 import Foundation
 
+enum RecoveryPhraseFormat {
+    static let wordCount = 16
+}
+
 @MainActor
 protocol JournalBackupServicing {
     func prepareBackup() throws -> PreparedJournalBackup

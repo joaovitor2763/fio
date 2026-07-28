@@ -159,6 +159,63 @@ private struct ImportedBackupFile: Identifiable {
     let data: Data
 }
 
+private struct BackupPrimaryButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    var isDestructive = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.body.weight(.semibold))
+            .foregroundStyle(
+                isEnabled
+                    ? (isDestructive ? Color.white : Theme.primaryControlForeground)
+                    : Theme.tertiaryText
+            )
+            .padding(.horizontal, 18)
+            .padding(.vertical, 14)
+            .frame(maxWidth: .infinity)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(
+                        isEnabled
+                            ? (isDestructive ? Color.red : Theme.primaryControlBackground)
+                            : Theme.card
+                    )
+            )
+            .overlay {
+                if !isEnabled {
+                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                        .stroke(Theme.cardStroke, lineWidth: 1)
+                }
+            }
+            .opacity(configuration.isPressed ? 0.82 : 1)
+            .animation(Motion.quick, value: configuration.isPressed)
+    }
+}
+
+private struct BackupSecondaryButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.body.weight(.medium))
+            .foregroundStyle(isEnabled ? Theme.primaryText : Theme.tertiaryText)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 11)
+            .background(
+                Capsule()
+                    .fill(Theme.card)
+            )
+            .overlay {
+                Capsule()
+                    .stroke(Theme.cardStroke, lineWidth: 1)
+            }
+            .opacity(configuration.isPressed ? 0.72 : 1)
+            .animation(Motion.quick, value: configuration.isPressed)
+    }
+}
+
 private struct RecoveryPhraseSheet: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -202,7 +259,7 @@ private struct RecoveryPhraseSheet: View {
                             systemImage: didCopy ? "checkmark" : "doc.on.doc"
                         )
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(BackupSecondaryButtonStyle())
 
                     Toggle(
                         "I saved the recovery phrase somewhere safe",
@@ -221,9 +278,8 @@ private struct RecoveryPhraseSheet: View {
                         isExporting = true
                     } label: {
                         Label("Export backup file", systemImage: "square.and.arrow.up")
-                            .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.borderedProminent)
+                    .buttonStyle(BackupPrimaryButtonStyle())
                     .disabled(!didSavePhrase)
                 }
                 .padding(20)
@@ -276,12 +332,21 @@ private struct ImportBackupSheet: View {
     let file: ImportedBackupFile
     let onRestored: (JournalBackupSummary) -> Void
 
-    @State private var recoveryPhrase = ""
+    @State private var recoveryWords = Array(
+        repeating: "",
+        count: RecoveryPhraseFormat.wordCount
+    )
     @State private var showsPhrase = false
     @State private var summary: JournalBackupSummary?
     @State private var errorMessage: String?
     @State private var showsRestoreConfirmation = false
     @State private var isRestoring = false
+    @FocusState private var focusedWord: Int?
+
+    private let wordColumns = [
+        GridItem(.flexible(), spacing: 10),
+        GridItem(.flexible(), spacing: 10)
+    ]
 
     var body: some View {
         NavigationStack {
@@ -301,26 +366,61 @@ private struct ImportBackupSheet: View {
                             .font(.footnote.weight(.medium))
                             .foregroundStyle(Theme.secondaryText)
 
-                        Group {
-                            if showsPhrase {
-                                TextField(
-                                    "Paste the 16 words",
-                                    text: $recoveryPhrase,
-                                    axis: .vertical
+                        Text("Enter all 16 words in order. You can paste the whole phrase into any field.")
+                            .font(.caption)
+                            .foregroundStyle(Theme.secondaryText)
+
+                        LazyVGrid(columns: wordColumns, spacing: 10) {
+                            ForEach(recoveryWords.indices, id: \.self) { index in
+                                HStack(spacing: 8) {
+                                    Text("\(index + 1)")
+                                        .font(.caption.monospacedDigit())
+                                        .foregroundStyle(Theme.tertiaryText)
+                                        .frame(width: 18, alignment: .trailing)
+
+                                    Group {
+                                        if showsPhrase {
+                                            TextField(
+                                                "Word",
+                                                text: wordBinding(at: index)
+                                            )
+                                        } else {
+                                            SecureField(
+                                                "Word",
+                                                text: wordBinding(at: index)
+                                            )
+                                        }
+                                    }
+                                    .focused($focusedWord, equals: index)
+                                    .submitLabel(
+                                        index == RecoveryPhraseFormat.wordCount - 1
+                                            ? .done
+                                            : .next
+                                    )
+                                    .onSubmit {
+                                        focusWord(after: index)
+                                    }
+                                    .accessibilityLabel("Recovery word \(index + 1)")
+                                }
+                                .padding(.horizontal, 10)
+                                .frame(minHeight: 46)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Theme.card)
                                 )
-                            } else {
-                                SecureField(
-                                    "Paste the 16 words",
-                                    text: $recoveryPhrase
-                                )
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(
+                                            focusedWord == index
+                                                ? Theme.accent
+                                                : Theme.cardStroke,
+                                            lineWidth: focusedWord == index ? 1.5 : 1
+                                        )
+                                }
                             }
                         }
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()
-                        .padding(14)
-                        .background(
-                            RoundedRectangle(cornerRadius: 16).fill(Theme.card)
-                        )
 
                         Toggle("Show phrase", isOn: $showsPhrase)
                             .font(.footnote)
@@ -339,21 +439,6 @@ private struct ImportBackupSheet: View {
                         .background(
                             RoundedRectangle(cornerRadius: 18).fill(Theme.card)
                         )
-
-                        Button(role: .destructive) {
-                            showsRestoreConfirmation = true
-                        } label: {
-                            Text("Replace journal with this backup")
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(isRestoring)
-                    } else {
-                        Button("Check backup") {
-                            verifyBackup()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .disabled(recoveryPhrase.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     }
 
                     if let errorMessage {
@@ -369,13 +454,19 @@ private struct ImportBackupSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .interactiveDismissDisabled(isRestoring)
             .scrollDismissesKeyboard(.interactively)
+            .safeAreaInset(edge: .bottom, spacing: 0) {
+                importAction
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 12)
+                    .background(.ultraThinMaterial)
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                         .disabled(isRestoring)
                 }
             }
-            .onChange(of: recoveryPhrase) {
+            .onChange(of: recoveryWords) {
                 summary = nil
                 errorMessage = nil
             }
@@ -394,6 +485,35 @@ private struct ImportBackupSheet: View {
     }
 
     @ViewBuilder
+    private var importAction: some View {
+        if summary != nil {
+            Button(role: .destructive) {
+                showsRestoreConfirmation = true
+            } label: {
+                Text("Replace journal with this backup")
+            }
+            .buttonStyle(BackupPrimaryButtonStyle(isDestructive: true))
+            .disabled(isRestoring)
+        } else {
+            Button("Check backup") {
+                verifyBackup()
+            }
+            .buttonStyle(BackupPrimaryButtonStyle())
+            .disabled(!hasCompletePhrase)
+        }
+    }
+
+    private var recoveryPhrase: String {
+        recoveryWords.joined(separator: " ")
+    }
+
+    private var hasCompletePhrase: Bool {
+        recoveryWords.allSatisfy {
+            !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        }
+    }
+
+    @ViewBuilder
     private func backupSummary(_ summary: JournalBackupSummary) -> some View {
         Text("\(summary.entryCount) entries")
         Text("\(summary.reviewCount) weekly reviews")
@@ -405,7 +525,58 @@ private struct ImportBackupSheet: View {
         }
     }
 
+    private func wordBinding(at index: Int) -> Binding<String> {
+        Binding(
+            get: { recoveryWords[index] },
+            set: { updateWord(at: index, with: $0) }
+        )
+    }
+
+    private func updateWord(at index: Int, with rawValue: String) {
+        let lowercaseValue = rawValue.lowercased(
+            with: Locale(identifier: "en_US_POSIX")
+        )
+        guard lowercaseValue.rangeOfCharacter(
+            from: .whitespacesAndNewlines
+        ) != nil else {
+            recoveryWords[index] = lowercaseValue
+            return
+        }
+
+        let pastedWords = lowercaseValue
+            .split(whereSeparator: \.isWhitespace)
+            .map(String.init)
+        guard !pastedWords.isEmpty else {
+            recoveryWords[index] = ""
+            return
+        }
+
+        for (offset, word) in pastedWords.enumerated()
+        where index + offset < RecoveryPhraseFormat.wordCount {
+            recoveryWords[index + offset] = word
+        }
+        focusFirstEmptyWord(startingAt: index + pastedWords.count)
+    }
+
+    private func focusWord(after index: Int) {
+        let nextIndex = index + 1
+        focusedWord = nextIndex < RecoveryPhraseFormat.wordCount
+            ? nextIndex
+            : nil
+    }
+
+    private func focusFirstEmptyWord(startingAt index: Int) {
+        if let emptyIndex = recoveryWords.indices.first(where: {
+            $0 >= index && recoveryWords[$0].isEmpty
+        }) {
+            focusedWord = emptyIndex
+        } else {
+            focusedWord = nil
+        }
+    }
+
     private func verifyBackup() {
+        focusedWord = nil
         do {
             summary = try store.backupService.summary(
                 for: file.data,
