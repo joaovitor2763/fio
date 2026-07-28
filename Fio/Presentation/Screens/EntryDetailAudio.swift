@@ -103,31 +103,46 @@ extension EntryDetailScreen {
     }
 
     func retranscriptionAction(for entry: Entry) -> some View {
-        Button {
-            showRetranscriptionLanguages = true
-        } label: {
-            HStack(spacing: 7) {
-                if isRetranscribing {
-                    ProgressView()
-                        .controlSize(.small)
-                        .tint(Theme.secondaryText)
-                } else {
-                    Image(systemName: "captions.bubble")
+        VStack(alignment: .leading, spacing: 10) {
+            Button {
+                retranscribe(entry)
+            } label: {
+                HStack(spacing: 7) {
+                    if isRetranscribing {
+                        ProgressView()
+                            .controlSize(.small)
+                            .tint(Theme.secondaryText)
+                    } else {
+                        Image(systemName: "captions.bubble")
+                    }
+                    if isRetranscribing {
+                        Text("Transcribing audio…")
+                    } else {
+                        Text("Transcribe again")
+                    }
                 }
-                if isRetranscribing {
-                    Text("Transcribing audio…")
-                } else {
-                    Text("Transcribe again in another language")
-                }
+                .font(.footnote)
+                .foregroundStyle(Theme.secondaryText)
             }
-            .font(.footnote)
-            .foregroundStyle(Theme.secondaryText)
+            .buttonStyle(.plain)
+
+            Button {
+                showRetranscriptionLanguages = true
+            } label: {
+                Label {
+                    Text("Transcribe again in another language")
+                } icon: {
+                    Image(systemName: "globe")
+                }
+                .font(.footnote)
+                .foregroundStyle(Theme.secondaryText)
+            }
+            .buttonStyle(.plain)
         }
-        .buttonStyle(.plain)
         .disabled(isRetranscribing || entry.audioFileName == nil)
     }
 
-    func retranscribe(_ entry: Entry, using locale: Locale) {
+    func retranscribe(_ entry: Entry, using locale: Locale? = nil) {
         showRetranscriptionLanguages = false
         guard !isRetranscribing else { return }
         isRetranscribing = true
@@ -135,7 +150,21 @@ extension EntryDetailScreen {
 
         Task {
             do {
-                try await store.retranscribe(entryID: entry.id, locale: locale)
+                let targetLocale: Locale
+                if let locale {
+                    targetLocale = locale
+                } else if let preferredLocale =
+                    await TranscriptionLanguagePreference.resolvedLocale() {
+                    targetLocale = preferredLocale
+                } else {
+                    throw RecordingSetupError.languageUnavailable(
+                        TranscriptionLanguagePreference.selectedDisplayName
+                    )
+                }
+                try await store.retranscribe(
+                    entryID: entry.id,
+                    locale: targetLocale
+                )
             } catch {
                 updateError = error.localizedDescription
             }
