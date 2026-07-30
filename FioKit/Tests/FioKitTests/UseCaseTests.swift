@@ -16,6 +16,7 @@ final class RecordEntryUseCaseTests: XCTestCase {
         XCTAssertEqual(repository.storage.count, 1)
         XCTAssertEqual(repository.storage.first?.transcript.text, "Planning the day")
         XCTAssertEqual(repository.storage.first?.duration, 58)
+        XCTAssertEqual(repository.storage.first?.createdAt, date(2026, 7, 14, 7, 30))
         XCTAssertTrue(repository.storage.first!.reflection.isSilent)
     }
 

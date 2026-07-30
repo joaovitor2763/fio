@@ -10,6 +10,7 @@ struct RecordScreen: View {
     @Environment(\.locale) private var locale
     @Environment(JournalStore.self) private var store
     @State private var session = RecordingSession()
+    @State private var entryDate = Date.now
     @State private var isSaving = false
 
     var body: some View {
@@ -61,6 +62,18 @@ struct RecordScreen: View {
             .font(.subheadline)
             .foregroundStyle(Theme.tertiaryText)
             Spacer()
+            if replacingEntryID == nil {
+                DatePicker(
+                    "Entry date",
+                    selection: $entryDate,
+                    in: Date.distantPast...Date.now,
+                    displayedComponents: .date
+                )
+                .labelsHidden()
+                .datePickerStyle(.compact)
+                .accessibilityLabel("Entry date")
+                .accessibilityIdentifier("entry-date-picker")
+            }
         }
         .padding(.horizontal, 24)
         .padding(.top, 12)
@@ -132,7 +145,8 @@ struct RecordScreen: View {
             duration: recording.duration,
             audioFileName: recording.audioFileName,
             replacing: replacingEntryID,
-            applyPersonalVocabulary: true
+            applyPersonalVocabulary: true,
+            at: entryDate
         )
         dismiss()
     }

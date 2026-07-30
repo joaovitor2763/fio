@@ -5,6 +5,7 @@ struct TextEntryScreen: View {
     @Environment(JournalStore.self) private var store
 
     @State private var text = ""
+    @State private var entryDate = Date.now
     @State private var isSaving = false
     @State private var showDiscardConfirmation = false
     @FocusState private var isEditorFocused: Bool
@@ -15,28 +16,54 @@ struct TextEntryScreen: View {
 
     var body: some View {
         NavigationStack {
-            ZStack(alignment: .topLeading) {
-                Theme.background.ignoresSafeArea()
+            VStack(spacing: 0) {
+                HStack {
+                    Label("Entry date", systemImage: "calendar")
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.secondaryText)
 
-                TextEditor(text: $text)
-                    .accessibilityIdentifier("text-entry-editor")
-                    .focused($isEditorFocused)
-                    .font(.body)
-                    .lineSpacing(5)
-                    .foregroundStyle(Theme.primaryText)
-                    .scrollContentBackground(.hidden)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
+                    Spacer()
 
-                if text.isEmpty {
-                    Text("What's on your mind?")
+                    DatePicker(
+                        "Entry date",
+                        selection: $entryDate,
+                        in: Date.distantPast...Date.now,
+                        displayedComponents: .date
+                    )
+                    .labelsHidden()
+                    .datePickerStyle(.compact)
+                    .accessibilityLabel("Entry date")
+                    .accessibilityIdentifier("entry-date-picker")
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+
+                Divider()
+
+                ZStack(alignment: .topLeading) {
+                    Theme.background.ignoresSafeArea()
+
+                    TextEditor(text: $text)
+                        .accessibilityIdentifier("text-entry-editor")
+                        .focused($isEditorFocused)
                         .font(.body)
-                        .foregroundStyle(Theme.tertiaryText)
-                        .padding(.horizontal, 21)
-                        .padding(.vertical, 20)
-                        .allowsHitTesting(false)
+                        .lineSpacing(5)
+                        .foregroundStyle(Theme.primaryText)
+                        .scrollContentBackground(.hidden)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+
+                    if text.isEmpty {
+                        Text("What's on your mind?")
+                            .font(.body)
+                            .foregroundStyle(Theme.tertiaryText)
+                            .padding(.horizontal, 21)
+                            .padding(.vertical, 20)
+                            .allowsHitTesting(false)
+                    }
                 }
             }
+            .background(Theme.background.ignoresSafeArea())
             .navigationTitle("Write")
             .navigationBarTitleDisplayMode(.inline)
             .scrollResponsiveNavigationBar()
@@ -84,7 +111,8 @@ struct TextEntryScreen: View {
         await store.finishRecording(
             transcriptText: trimmedText,
             duration: 0,
-            audioFileName: nil
+            audioFileName: nil,
+            at: entryDate
         )
         dismiss()
     }

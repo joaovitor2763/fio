@@ -837,6 +837,22 @@
         }
       }
     },
+    "Entry date" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fecha de la entrada"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Data da nota"
+          }
+        }
+      }
+    },
     "Expand" : {
       "localizations" : {
         "es" : {

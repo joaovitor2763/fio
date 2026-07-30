@@ -11,9 +11,12 @@ extension JournalStore {
         duration: TimeInterval,
         audioFileName: String?,
         replacing replacedID: UUID? = nil,
-        applyPersonalVocabulary: Bool = false
+        applyPersonalVocabulary: Bool = false,
+        at date: Date = .now
     ) async {
-        let replacedAudioFileName = replacedID.flatMap { entry(withID: $0)?.audioFileName }
+        let replacedEntry = replacedID.flatMap { entry(withID: $0) }
+        let replacedAudioFileName = replacedEntry?.audioFileName
+        let entryDate = replacedEntry?.createdAt ?? min(date, .now)
         let textToSave = applyPersonalVocabulary
             ? PersonalVocabulary.apply(to: transcriptText).text
             : transcriptText
@@ -28,7 +31,8 @@ extension JournalStore {
                         transcriptText: textToSave,
                         duration: duration,
                         audioFileName: audioFileName,
-                        replacing: replacedID
+                        replacing: replacedID,
+                        at: entryDate
                     )
                     if let entry, let replacedID {
                         upsertEntry(entry, removing: replacedID)
@@ -52,7 +56,8 @@ extension JournalStore {
                 saved = try await recordEntry.execute(
                     transcriptText: textToSave,
                     duration: duration,
-                    audioFileName: audioFileName
+                    audioFileName: audioFileName,
+                    at: entryDate
                 )
             }
             guard let saved else {
